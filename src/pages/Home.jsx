@@ -14,9 +14,10 @@ const sectionVariants = {
     y: 0,
     transition: { duration: 0.6, ease: "easeOut" },
   },
+  exit: { opacity: 0, y: -50, transition: { duration: 0.4 } }
 };
 
-const Home = () => {
+const Home = ({ isSearchOpen, setIsSearchOpen }) => {
   // ✅ State ab local data se initialize ho raha hai
   const [exercises, setExercises] = useState(allExercisesData);
   const [bodyPart, setBodyPart] = useState("all");
@@ -55,7 +56,12 @@ const Home = () => {
   };
 
   return (
-    <div>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit="exit"
+      className="bg-gray-950 text-white min-h-screen"
+    >
       <HeroBanner />
 
       <motion.div
@@ -65,10 +71,11 @@ const Home = () => {
         viewport={{ once: true, amount: 0.2 }}
       >
         <SearchExercises
-          // ✅ Naye functions ko as a prop pass karein
           onSearch={handleSearch}
           bodyPart={bodyPart}
           setBodyPart={handleBodyPartChange}
+          isSearchOpen={isSearchOpen}
+          setIsSearchOpen={setIsSearchOpen}
         />
       </motion.div>
 
@@ -79,12 +86,11 @@ const Home = () => {
         viewport={{ once: true, amount: 0.2 }}
       >
         <Exercises
-          // ✅ Sirf zaroori props pass karein
           exercises={exercises}
           bodyPart={bodyPart}
         />
       </motion.div>
-    </div>
+    </motion.div>
   );
 };
 
