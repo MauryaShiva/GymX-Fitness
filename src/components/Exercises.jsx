@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import allExercisesData from "../data/exercises.json";
 import ExerciseCard from "./ExerciseCard.jsx";
 import Loader from "./Loader.jsx";
 
