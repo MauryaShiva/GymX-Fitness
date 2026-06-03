@@ -149,7 +149,7 @@ const Exercises = ({ exercises, bodyPart }) => {
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12 min-h-[500px]"
+          className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6 lg:gap-8 min-h-[500px]"
         >
           {currentExercises.length ? (
             currentExercises.map((exercise) => (
