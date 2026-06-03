@@ -56,11 +56,10 @@ const Home = () => {
   };
 
   return (
-    <div className="w-full text-white overflow-hidden">
-      {/* HERO SECTION */}
-      <section className="relative bg-gradient-to-b from-gray-950 via-black to-gray-900 py-24">
+    <div className="w-full overflow-hidden bg-white">
+      {/* HERO SECTION - Using a very soft gray instead of deep gradients */}
+      <section className="py-24 bg-slate-50">
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          {/* Hero */}
           <motion.div
             variants={sectionVariants}
             initial="hidden"
@@ -70,13 +69,11 @@ const Home = () => {
             <HeroBanner />
           </motion.div>
 
-          {/* Search */}
           <motion.div
             variants={sectionVariants}
             initial="hidden"
             animate="visible"
             transition={{ delay: 0.2 }}
-            className="w-full"
           >
             <SearchExercises
               onSearch={handleSearch}
@@ -87,34 +84,36 @@ const Home = () => {
         </div>
       </section>
 
-      {/* DIVIDER */}
-      <div className="h-px bg-gradient-to-r from-transparent via-gray-700 to-transparent"></div>
+      {/* Divider */}
+      <div className="h-px bg-slate-200"></div>
 
       {/* EXERCISES SECTION */}
-      <section className="py-24 bg-gray-900">
+      <section className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-6">
-          {/* Heading */}
           <motion.div
             variants={sectionVariants}
             initial="hidden"
-            animate="visible"
+            whileInView="visible"
+            viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-3xl md:text-4xl font-bold tracking-wide">
+            {/* Heading - Changed to text-slate-950 for pure dark visibility */}
+            <h2 className="text-3xl md:text-4xl font-bold text-slate-950 tracking-wide">
               Explore Our Exercises
             </h2>
 
-            <p className="text-gray-400 mt-4 max-w-2xl mx-auto text-sm md:text-base">
+            {/* Paragraph - Changed to text-slate-800 (much darker than before) */}
+            <p className="text-slate-800 mt-4 max-w-2xl mx-auto text-sm md:text-base">
               Discover a wide range of exercises for every muscle group. Search
               and filter workouts to build the perfect routine.
             </p>
           </motion.div>
 
-          {/* Exercise Cards */}
           <motion.div
             variants={sectionVariants}
             initial="hidden"
-            animate="visible"
+            whileInView="visible"
+            viewport={{ once: true }}
             transition={{ delay: 0.2 }}
           >
             <Exercises exercises={exercises} bodyPart={bodyPart} />

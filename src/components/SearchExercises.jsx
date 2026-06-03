@@ -62,25 +62,21 @@ const SearchExercises = ({ onSearch, bodyPart, setBodyPart }) => {
         .getElementById("exercises")
         ?.scrollIntoView({ behavior: "smooth" });
     } else {
-      alert(
-        "Please select a valid exercise, body part, or equipment from the suggestions.",
-      );
+      alert("Please select a valid exercise, body part, or equipment.");
     }
   };
 
   return (
-    <section className="flex flex-col justify-center h-full w-full px-6 text-white">
-      {/* Heading */}
+    <section className="flex flex-col justify-center h-full w-full px-6">
+      {/* Heading - text-slate-950 */}
       <div className="mb-10 text-center lg:text-left">
-        <h2 className="text-3xl md:text-4xl font-bold leading-tight">
+        <h2 className="text-3xl md:text-4xl font-bold leading-tight text-slate-950">
           Find Your Perfect
           <br />
-          <span className="bg-gradient-to-r from-red-500 to-red-600 bg-clip-text text-transparent">
-            Workout Routine
-          </span>
+          <span className="text-red-600">Workout Routine</span>
         </h2>
 
-        <p className="text-gray-400 mt-4 text-sm max-w-md">
+        <p className="text-slate-800 mt-4 text-sm max-w-md">
           Search exercises by muscle group, equipment, or workout name and build
           the perfect training routine.
         </p>
@@ -88,22 +84,19 @@ const SearchExercises = ({ onSearch, bodyPart, setBodyPart }) => {
 
       {/* Search Box */}
       <div className="relative w-full max-w-lg mb-10">
-        {/* Icon */}
-        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-600">
           <Search size={18} />
         </div>
 
-        {/* Input */}
         <input
-          className="w-full h-12 bg-gray-900 border border-gray-700 rounded-full text-white placeholder-gray-400 pl-12 pr-32 text-sm focus:outline-none focus:ring-2 focus:ring-red-500 transition"
+          className="w-full h-12 bg-white border border-slate-300 rounded-full text-slate-950 placeholder-slate-500 pl-12 pr-32 text-sm focus:outline-none focus:ring-2 focus:ring-red-500 transition shadow-sm"
           value={search}
           onChange={handleInputChange}
-          placeholder="Search exercises, muscles, equipment..."
+          placeholder="Search exercises, muscles..."
           type="text"
           onKeyPress={(e) => e.key === "Enter" && handleLocalSearch()}
         />
 
-        {/* Button */}
         <button
           className="absolute right-1 top-1/2 -translate-y-1/2 bg-red-600 hover:bg-red-700 text-white font-medium h-9 px-6 rounded-full text-sm transition transform hover:scale-105"
           onClick={handleLocalSearch}
@@ -111,14 +104,13 @@ const SearchExercises = ({ onSearch, bodyPart, setBodyPart }) => {
           Search
         </button>
 
-        {/* Suggestions */}
         {suggestions.length > 0 && (
-          <ul className="absolute top-full mt-2 w-full bg-gray-900 border border-gray-700 rounded-lg shadow-xl z-20 overflow-hidden">
+          <ul className="absolute top-full mt-2 w-full bg-white border border-slate-200 rounded-lg shadow-xl z-20 overflow-hidden">
             {suggestions.map((suggestion, index) => (
               <li
                 key={index}
                 onClick={() => handleSuggestionClick(suggestion)}
-                className="px-4 py-2 text-gray-300 hover:bg-red-600 hover:text-white cursor-pointer transition capitalize"
+                className="px-4 py-2 text-slate-900 hover:bg-red-600 hover:text-white cursor-pointer transition capitalize"
               >
                 {suggestion}
               </li>
@@ -127,7 +119,6 @@ const SearchExercises = ({ onSearch, bodyPart, setBodyPart }) => {
         )}
       </div>
 
-      {/* Body Parts Scroll */}
       <div className="w-full max-w-5xl">
         <HorizontalScrollbar
           data={bodyParts}
