@@ -1,1 +1,17 @@
 @import "tailwindcss";
+
+/* Safe area support for mobile devices (like iPhone notch/bottom bar) */
+html {
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+  background-color: #000000; /* Match theme-color to avoid white flashes */
+}
+
+/* Base styles to prevent pull-to-refresh and horizontal scroll on mobile apps */
+body {
+  overscroll-behavior-y: none;
+  overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
+}

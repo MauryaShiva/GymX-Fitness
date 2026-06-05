@@ -54,6 +54,33 @@ const Home = () => {
     }
   };
 
+  // Listen for global search events from mobile overlay
+  React.useEffect(() => {
+    const handleGlobalSearch = (e) => {
+      if (e.detail) {
+        handleSearch(e.detail);
+        // Scroll to exercises section
+        document.getElementById("exercises")?.scrollIntoView({ behavior: "smooth" });
+      }
+    };
+    window.addEventListener('global-search', handleGlobalSearch);
+
+    // Also check URL parameters in case we redirected from another page
+    const params = new URLSearchParams(window.location.search);
+    const searchParam = params.get('search');
+    if (searchParam) {
+      handleSearch(searchParam);
+      setTimeout(() => {
+        document.getElementById("exercises")?.scrollIntoView({ behavior: "smooth" });
+      }, 500);
+      // Clean up URL
+      window.history.replaceState({}, document.title, "/");
+    }
+
+    return () => window.removeEventListener('global-search', handleGlobalSearch);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <div>
       <HeroBanner />
