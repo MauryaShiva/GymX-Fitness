@@ -58,53 +58,56 @@ const Detail = ({ exerciseDetail }) => {
         variants={itemVariants}
         className="flex flex-col gap-5 lg:gap-6 w-full"
       >
-        <h1 className="text-3xl lg:text-5xl font-bold capitalize text-gray-800">
+        <h1 className="text-3xl lg:text-5xl font-bold capitalize text-gray-100">
           {name}
         </h1>
-        <p className="text-base lg:text-lg text-gray-600">
+        <p className="text-base lg:text-lg text-gray-400">
           Exercises keep you strong.{" "}
-          <span className="capitalize font-semibold">{name}</span> is one of the
+          <span className="capitalize font-semibold text-primary">{name}</span> is one of the
           best exercises to target your{" "}
-          <span className="font-semibold">{targetMuscles[0]}</span>. It will
+          <span className="font-semibold text-primary">{targetMuscles[0]}</span>. It will
           help you improve your mood and gain energy.
         </p>
 
         {extraDetail.map((item) => (
-          <div key={item.name} className="flex flex-row items-center gap-6">
-            <div className="bg-[#FFF2DB] rounded-full w-20 h-20 flex items-center justify-center flex-shrink-0">
-              <img src={item.icon} alt={item.alt} className="w-11 h-11" />
+          <div key={item.name} className="flex flex-row items-center gap-6 bg-surface p-3 rounded-2xl">
+            <div className="bg-primary/20 rounded-full w-16 h-16 flex items-center justify-center flex-shrink-0">
+              <img src={item.icon} alt={item.alt} className="w-8 h-8" style={{ filter: 'brightness(0) invert(1)' }} />
             </div>
-            <span className="capitalize text-lg lg:text-2xl text-gray-700">
+            <span className="capitalize text-lg lg:text-xl text-gray-200 font-medium">
               {item.name}
             </span>
           </div>
         ))}
 
         {/* ✅ Interactive Instructions Section */}
-        <div className="mt-4">
-          <button
-            onClick={() => setShowInstructions(!showInstructions)}
-            className="bg-red-500 text-white font-bold py-2 px-6 rounded-md hover:bg-red-600 transition duration-300"
-          >
-            {showInstructions ? "Hide Instructions" : "Show Instructions"}
-          </button>
-
+        <div className="mt-4 pb-20">
           <AnimatePresence>
             {showInstructions && (
               <motion.ol
-                className="list-decimal list-inside mt-4 space-y-2 text-gray-600"
+                className="list-decimal list-inside mt-4 space-y-2 text-gray-400 bg-surface p-4 rounded-lg shadow-inner"
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: "auto" }}
                 exit={{ opacity: 0, height: 0 }}
               >
                 {instructions.map((step, index) => (
-                  <li key={index}>{step}</li>
+                  <li key={index} className="mb-2 leading-relaxed">{step}</li>
                 ))}
               </motion.ol>
             )}
           </AnimatePresence>
         </div>
       </motion.div>
+
+      {/* Sticky Action Button for Mobile */}
+      <div className="fixed bottom-16 md:bottom-6 left-0 right-0 px-4 py-3 bg-background/90 backdrop-blur-md border-t border-gray-800 flex justify-center z-40">
+          <button
+            onClick={() => setShowInstructions(!showInstructions)}
+            className="w-full max-w-md bg-primary text-background font-bold py-3 px-6 rounded-full shadow-lg hover:bg-primary/90 transition duration-300 active:scale-95"
+          >
+            {showInstructions ? "Hide Instructions" : "Show Instructions"}
+          </button>
+      </div>
     </motion.div>
   );
 };

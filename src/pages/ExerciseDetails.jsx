@@ -71,13 +71,27 @@ const ExerciseDetails = () => {
   }
   // --- Logic mein koi badlav nahi ---
 
+  const pageVariants = {
+    initial: { opacity: 0, x: -20 },
+    in: { opacity: 1, x: 0 },
+    out: { opacity: 0, x: 20 },
+  };
+
+  const pageTransition = {
+    type: "tween",
+    ease: "anticipate",
+    duration: 0.5,
+  };
+
   return (
     // ✅ New UI: A clean, high-contrast light theme for better readability.
     <motion.main
-      className="bg-gray-50 text-gray-900 min-h-screen px-4 sm:px-6 lg:px-8"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, ease: "easeInOut" }}
+      className="bg-background text-gray-100 min-h-screen px-4 sm:px-6 lg:px-8"
+      initial="initial"
+      animate="in"
+      exit="out"
+      variants={pageVariants}
+      transition={pageTransition}
     >
       <div className="max-w-7xl mx-auto py-12 md:py-20">
         {/*
@@ -88,9 +102,10 @@ const ExerciseDetails = () => {
           <Detail exerciseDetail={exerciseDetail} />
         </section>
 
-        {/* ✅ Stylized Divider: Updated for the light theme. */}
+        {/* ✅ Stylized Divider */}
         <div className="w-full flex justify-center my-20">
-          <div className="w-1/3 h-px bg-gray-200"></div>
+          <div className="w-1/3 h-px bg-gray-800"></div>
+          <div className="w-1/3 h-px bg-gray-800"></div>
         </div>
 
         {/*
