@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import Fuse from "fuse.js";
 
@@ -40,6 +41,14 @@ const Home = () => {
     setBodyPart(`${searchTerm}`);
   };
 
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.state && location.state.searchTerm) {
+      handleSearch(location.state.searchTerm);
+    }
+  }, [location.state]);
+
   const handleBodyPartChange = (part) => {
     setBodyPart(part);
     if (part === "all") {
@@ -54,8 +63,26 @@ const Home = () => {
     }
   };
 
+  const pageVariants = {
+    initial: { opacity: 0, x: -20 },
+    in: { opacity: 1, x: 0 },
+    out: { opacity: 0, x: 20 },
+  };
+
+  const pageTransition = {
+    type: "tween",
+    ease: "anticipate",
+    duration: 0.5,
+  };
+
   return (
-    <div>
+    <motion.div
+      initial="initial"
+      animate="in"
+      exit="out"
+      variants={pageVariants}
+      transition={pageTransition}
+    >
       <HeroBanner />
 
       <motion.div
@@ -84,7 +111,7 @@ const Home = () => {
           bodyPart={bodyPart}
         />
       </motion.div>
-    </div>
+    </motion.div>
   );
 };
 
