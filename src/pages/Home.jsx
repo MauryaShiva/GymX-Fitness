@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Fuse from "fuse.js";
 
@@ -6,6 +6,7 @@ import allExercisesData from "../data/exercises.json"; // Local data import
 import HeroBanner from "../components/HeroBanner.jsx";
 import SearchExercises from "../components/SearchExercises.jsx";
 import Exercises from "../components/Exercises.jsx";
+import MobileSearchOverlay from "../components/MobileSearchOverlay.jsx";
 
 const sectionVariants = {
   hidden: { opacity: 0, y: 50 },
@@ -20,6 +21,16 @@ const Home = () => {
   // ✅ State ab local data se initialize ho raha hai
   const [exercises, setExercises] = useState(allExercisesData);
   const [bodyPart, setBodyPart] = useState("all");
+  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
+
+  useEffect(() => {
+    const handleGlobalSearch = () => {
+      setIsMobileSearchOpen(true);
+    };
+
+    window.addEventListener("global-search", handleGlobalSearch);
+    return () => window.removeEventListener("global-search", handleGlobalSearch);
+  }, []);
 
   // Fuse.js setup for smart search
   const fuse = new Fuse(allExercisesData, {
@@ -84,6 +95,14 @@ const Home = () => {
           bodyPart={bodyPart}
         />
       </motion.div>
+
+      {/* Mobile Search Overlay */}
+      <MobileSearchOverlay
+        isOpen={isMobileSearchOpen}
+        onClose={() => setIsMobileSearchOpen(false)}
+        onSearch={handleSearch}
+        data={allExercisesData}
+      />
     </div>
   );
 };
