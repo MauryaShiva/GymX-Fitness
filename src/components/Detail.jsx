@@ -40,65 +40,54 @@ const Detail = ({ exerciseDetail }) => {
   return (
     // ✅ Wrap the main container in a motion.div for entry animation
     <motion.div
-      className="flex flex-col lg:flex-row p-0 md:p-5 items-center md:items-start gap-6 lg:gap-12"
+      className="flex flex-col lg:flex-row p-5 items-center gap-10"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
     >
-      <motion.div variants={itemVariants} className="w-full md:w-1/2 lg:w-[45%] rounded-b-3xl md:rounded-3xl overflow-hidden shadow-2xl bg-gray-50 aspect-square flex items-center justify-center">
-        <img
-          src={gifUrl}
-          alt={name}
-          loading="lazy"
-          className="w-full h-full object-cover"
-        />
-      </motion.div>
+      <motion.img
+        variants={itemVariants}
+        src={gifUrl}
+        alt={name}
+        loading="lazy"
+        className="w-full max-w-md lg:max-w-lg shadow-lg rounded-lg"
+      />
 
       {/* ✅ Animate the text content as well */}
       <motion.div
         variants={itemVariants}
-        className="flex flex-col gap-6 w-full md:w-1/2 lg:w-[55%] px-5 md:px-0"
+        className="flex flex-col gap-5 lg:gap-6 w-full"
       >
-        <div className="space-y-3">
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold capitalize text-gray-900 tracking-tight">
-            {name}
-          </h1>
-          <p className="text-base md:text-lg text-gray-600 leading-relaxed">
-            Exercises keep you strong.{" "}
-            <span className="capitalize font-semibold text-red-600">{name}</span> is one of the
-            best exercises to target your{" "}
-            <span className="font-semibold text-gray-800">{targetMuscles[0]}</span>. It will
-            help you improve your mood and gain energy.
-          </p>
-        </div>
+        <h1 className="text-3xl lg:text-5xl font-bold capitalize text-gray-800">
+          {name}
+        </h1>
+        <p className="text-base lg:text-lg text-gray-600">
+          Exercises keep you strong.{" "}
+          <span className="capitalize font-semibold">{name}</span> is one of the
+          best exercises to target your{" "}
+          <span className="font-semibold">{targetMuscles[0]}</span>. It will
+          help you improve your mood and gain energy.
+        </p>
 
-        <div className="flex flex-wrap gap-4 mt-2">
-          {extraDetail.map((item) => (
-            <motion.div
-              key={item.name}
-              className="flex items-center gap-3 bg-white px-4 py-3 rounded-2xl shadow-sm border border-gray-100 flex-1 min-w-[140px]"
-              whileHover={{ scale: 1.05, y: -2 }}
-              transition={{ type: "spring", stiffness: 400, damping: 10 }}
-            >
-              <div className="bg-[#FFF2DB] rounded-full w-12 h-12 flex items-center justify-center flex-shrink-0">
-                <img src={item.icon} alt={item.alt} className="w-6 h-6" />
-              </div>
-              <span className="capitalize text-sm md:text-base font-semibold text-gray-800">
-                {item.name}
-              </span>
-            </motion.div>
-          ))}
-        </div>
+        {extraDetail.map((item) => (
+          <div key={item.name} className="flex flex-row items-center gap-6">
+            <div className="bg-[#FFF2DB] rounded-full w-20 h-20 flex items-center justify-center flex-shrink-0">
+              <img src={item.icon} alt={item.alt} className="w-11 h-11" />
+            </div>
+            <span className="capitalize text-lg lg:text-2xl text-gray-700">
+              {item.name}
+            </span>
+          </div>
+        ))}
 
         {/* ✅ Interactive Instructions Section */}
-        <div className="mt-6 md:mt-4 pb-24 md:pb-0">
-          <motion.button
-            whileTap={{ scale: 0.95 }}
+        <div className="mt-4">
+          <button
             onClick={() => setShowInstructions(!showInstructions)}
-            className="w-full md:w-auto bg-gray-900 text-white font-semibold py-4 px-8 rounded-xl hover:bg-gray-800 transition duration-300 shadow-lg shadow-gray-900/20"
+            className="bg-red-500 text-white font-bold py-2 px-6 rounded-md hover:bg-red-600 transition duration-300"
           >
-            {showInstructions ? "Hide Instructions" : "Show Step-by-Step Instructions"}
-          </motion.button>
+            {showInstructions ? "Hide Instructions" : "Show Instructions"}
+          </button>
 
           <AnimatePresence>
             {showInstructions && (
