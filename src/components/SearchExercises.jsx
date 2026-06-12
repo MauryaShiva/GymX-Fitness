@@ -85,7 +85,7 @@ const SearchExercises = ({ onSearch, bodyPart, setBodyPart }) => {
         </div>
         {/* ✅ Revamped the input for a glassy, modern look */}
         <input
-          className="w-full h-16 bg-gray-800/50 text-white placeholder-gray-500 border border-gray-700 rounded-full py-2 pl-16 pr-40 text-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent backdrop-blur-sm transition-all duration-300"
+          className="w-full h-14 md:h-16 bg-gray-800/50 text-white placeholder-gray-500 border border-gray-700 rounded-full py-2 pl-12 md:pl-16 pr-24 md:pr-40 text-base md:text-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent backdrop-blur-sm transition-all duration-300"
           value={search}
           onChange={handleInputChange}
           placeholder="Search exercises, muscles, equipment..."
@@ -95,7 +95,7 @@ const SearchExercises = ({ onSearch, bodyPart, setBodyPart }) => {
         />
         {/* ✅ Upgraded the button with a gradient and interactive effects */}
         <button
-          className="absolute right-2 top-1/2 -translate-y-1/2 bg-gradient-to-r from-red-600 to-red-800 text-white font-bold h-12 px-8 rounded-full text-lg hover:scale-105 active:scale-95 transform transition-all duration-300 shadow-lg shadow-red-500/20 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-black focus:ring-red-500"
+          className="absolute right-1 md:right-2 top-1/2 -translate-y-1/2 bg-gradient-to-r from-red-600 to-red-800 text-white font-bold h-10 md:h-12 px-4 md:px-8 rounded-full text-sm md:text-lg hover:scale-105 active:scale-95 transform transition-all duration-300 shadow-lg shadow-red-500/20 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-black focus:ring-red-500"
           onClick={handleLocalSearch}
         >
           Search

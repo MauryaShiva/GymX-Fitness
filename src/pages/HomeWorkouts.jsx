@@ -48,7 +48,7 @@ const HomeWorkouts = () => {
         </div>
 
         {/* Day Selector - Enhanced with gradients, shadows, and hover effects */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-4 mb-16">
+        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2 md:gap-4 mb-16">
           {Object.values(weeklyPlan).map((dayPlan) => {
             const isSelected = selectedDay === dayPlan.day.toLowerCase();
             return (
@@ -58,7 +58,7 @@ const HomeWorkouts = () => {
                 // ✅ Enhanced styling for buttons:
                 // - Added a subtle border and shadow for a "card" feel.
                 // - Improved hover and selected states for better interactivity.
-                className={`p-4 rounded-xl text-left transition-all duration-300 transform hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-black ${
+                className={`p-3 md:p-4 rounded-xl text-left transition-all duration-300 transform hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-black ${
                   isSelected
                     ? "bg-red-600 text-white shadow-lg scale-105 ring-2 ring-red-500"
                     : "bg-gray-800 border border-gray-700 hover:bg-gray-700 hover:border-red-500"
