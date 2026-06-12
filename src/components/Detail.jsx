@@ -40,7 +40,7 @@ const Detail = ({ exerciseDetail }) => {
   return (
     // ✅ Wrap the main container in a motion.div for entry animation
     <motion.div
-      className="flex flex-col lg:flex-row p-5 items-center gap-10"
+      className="flex flex-col lg:flex-row p-0 md:p-5 items-center gap-6 md:gap-10"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
@@ -50,7 +50,7 @@ const Detail = ({ exerciseDetail }) => {
         src={gifUrl}
         alt={name}
         loading="lazy"
-        className="w-full max-w-md lg:max-w-lg shadow-lg rounded-lg"
+        className="w-full lg:max-w-lg shadow-lg rounded-xl md:rounded-lg"
       />
 
       {/* ✅ Animate the text content as well */}
@@ -81,13 +81,23 @@ const Detail = ({ exerciseDetail }) => {
         ))}
 
         {/* ✅ Interactive Instructions Section */}
-        <div className="mt-4">
+        <div className="mt-4 pb-12 md:pb-0">
           <button
             onClick={() => setShowInstructions(!showInstructions)}
-            className="bg-red-500 text-white font-bold py-2 px-6 rounded-md hover:bg-red-600 transition duration-300"
+            className="bg-red-500 text-white font-bold py-3 px-6 rounded-xl md:rounded-md hover:bg-red-600 transition duration-300 w-full md:w-auto shadow-md"
           >
             {showInstructions ? "Hide Instructions" : "Show Instructions"}
           </button>
+
+          {/* Sticky Mobile Action Button wrapper (optional based on preference, currently placing inline above) */}
+          <div className="fixed bottom-[4.5rem] md:bottom-0 left-0 right-0 p-4 bg-white/90 backdrop-blur-md md:hidden flex gap-4 z-40 border-t border-gray-100 pb-safe">
+            <button
+               onClick={() => setShowInstructions(!showInstructions)}
+               className="bg-red-500 text-white font-bold py-3 px-6 rounded-xl hover:bg-red-600 transition duration-300 w-full shadow-md"
+            >
+              {showInstructions ? "Hide Instructions" : "View Instructions"}
+            </button>
+          </div>
 
           <AnimatePresence>
             {showInstructions && (

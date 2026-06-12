@@ -79,7 +79,7 @@ const ExerciseDetails = () => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: "easeInOut" }}
     >
-      <div className="max-w-7xl mx-auto py-12 md:py-20">
+      <div className="max-w-7xl mx-auto pt-6 pb-24 md:py-20">
         {/*
           NOTE: For the best look, the <Detail /> component should be updated
           to use this new light theme with teal accents.

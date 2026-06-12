@@ -6,6 +6,7 @@ import allExercisesData from "../data/exercises.json"; // Local data import
 import HeroBanner from "../components/HeroBanner.jsx";
 import SearchExercises from "../components/SearchExercises.jsx";
 import Exercises from "../components/Exercises.jsx";
+import MobileSearchOverlay from "../components/MobileSearchOverlay.jsx";
 
 const sectionVariants = {
   hidden: { opacity: 0, y: 50 },
@@ -20,6 +21,17 @@ const Home = () => {
   // ✅ State ab local data se initialize ho raha hai
   const [exercises, setExercises] = useState(allExercisesData);
   const [bodyPart, setBodyPart] = useState("all");
+  const [isSearchOverlayOpen, setIsSearchOverlayOpen] = useState(false);
+
+  React.useEffect(() => {
+    const handleGlobalSearch = () => {
+      setIsSearchOverlayOpen(true);
+    };
+    window.addEventListener("global-search", handleGlobalSearch);
+    return () => {
+      window.removeEventListener("global-search", handleGlobalSearch);
+    };
+  }, []);
 
   // Fuse.js setup for smart search
   const fuse = new Fuse(allExercisesData, {
@@ -56,6 +68,12 @@ const Home = () => {
 
   return (
     <div>
+      <MobileSearchOverlay
+        isOpen={isSearchOverlayOpen}
+        onClose={() => setIsSearchOverlayOpen(false)}
+        onSearch={handleSearch}
+      />
+
       <HeroBanner />
 
       <motion.div

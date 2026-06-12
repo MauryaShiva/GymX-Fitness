@@ -66,7 +66,7 @@ const HeroBanner = () => {
 
       {/* All your text and button content remains the same */}
       <motion.div
-        className="relative z-10 flex flex-col items-center"
+        className="relative z-10 flex flex-col items-center px-4"
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
@@ -74,10 +74,10 @@ const HeroBanner = () => {
         <p className="font-semibold text-white text-lg md:text-xl mb-2 drop-shadow-xl">
           Your Fitness Journey Starts Here
         </p>
-        <h1 className="my-4 font-extrabold text-5xl md:text-7xl lg:text-8xl text-white leading-tight drop-shadow-2xl">
+        <h1 className="my-4 font-extrabold text-4xl sm:text-5xl md:text-7xl lg:text-8xl text-white leading-tight drop-shadow-2xl">
           Train Hard <br /> Stay Consistent
         </h1>
-        <p className="mb-10 text-lg text-white max-w-2xl drop-shadow-xl">
+        <p className="mb-10 text-base sm:text-lg text-white max-w-2xl drop-shadow-xl">
           Build the best version of you. Unlock your potential with personalized
           workouts and expert guidance.
         </p>
@@ -88,7 +88,7 @@ const HeroBanner = () => {
             boxShadow: "0px 0px 30px rgba(59, 130, 246, 0.6)",
           }}
           whileTap={{ scale: 0.95 }}
-          className="inline-flex items-center gap-3 px-10 py-5 bg-gradient-to-r from-blue-600 to-blue-400 text-white font-bold text-xl rounded-full shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+          className="inline-flex items-center gap-3 px-6 py-3 sm:px-10 sm:py-5 bg-gradient-to-r from-blue-600 to-blue-400 text-white font-bold text-lg sm:text-xl rounded-full shadow-xl transition-all duration-300 transform hover:-translate-y-1"
         >
           Explore Workouts
           <ArrowForward />
