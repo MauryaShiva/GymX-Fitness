@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { motion } from "framer-motion";
 import Fuse from "fuse.js";
 
-import allExercisesData from "../data/exercises.json"; // Local data import
+import allExercisesData from "../data/exercises.json";
 import HeroBanner from "../components/HeroBanner.jsx";
 import SearchExercises from "../components/SearchExercises.jsx";
 import Exercises from "../components/Exercises.jsx";
@@ -17,18 +17,15 @@ const sectionVariants = {
 };
 
 const Home = () => {
-  // ✅ State ab local data se initialize ho raha hai
   const [exercises, setExercises] = useState(allExercisesData);
   const [bodyPart, setBodyPart] = useState("all");
 
-  // Fuse.js setup for smart search
-  const fuse = new Fuse(allExercisesData, {
+  const fuse = useMemo(() => new Fuse(allExercisesData, {
     keys: ["name", "targetMuscles", "equipments", "bodyParts"],
     threshold: 0.4,
-  });
+  }), []);
 
-  // ✅ Filtering aur searching ka saara logic ab yahan hai
-  const handleSearch = (searchTerm) => {
+  const handleSearch = useCallback((searchTerm) => {
     if (searchTerm === "") {
       setExercises(allExercisesData);
       setBodyPart("all");
@@ -38,7 +35,20 @@ const Home = () => {
     const searchedExercises = results.map((result) => result.item);
     setExercises(searchedExercises);
     setBodyPart(`${searchTerm}`);
-  };
+
+    setTimeout(() => {
+        document.getElementById("exercises")?.scrollIntoView({ behavior: "smooth" });
+    }, 300);
+  }, [fuse]);
+
+  useEffect(() => {
+    const handleGlobalSearch = (e) => {
+      handleSearch(e.detail);
+    };
+
+    window.addEventListener('global-search', handleGlobalSearch);
+    return () => window.removeEventListener('global-search', handleGlobalSearch);
+  }, [handleSearch]);
 
   const handleBodyPartChange = (part) => {
     setBodyPart(part);
@@ -63,14 +73,24 @@ const Home = () => {
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.2 }}
+        className="hidden md:block"
       >
         <SearchExercises
-          // ✅ Naye functions ko as a prop pass karein
           onSearch={handleSearch}
           bodyPart={bodyPart}
           setBodyPart={handleBodyPartChange}
         />
       </motion.div>
+
+      <div className="md:hidden mt-8 mb-4">
+        <h2 className="text-2xl font-bold mb-4 px-2">Categories</h2>
+         <SearchExercises
+          onSearch={handleSearch}
+          bodyPart={bodyPart}
+          setBodyPart={handleBodyPartChange}
+          hideSearchInput={true}
+        />
+      </div>
 
       <motion.div
         variants={sectionVariants}
@@ -79,7 +99,6 @@ const Home = () => {
         viewport={{ once: true, amount: 0.2 }}
       >
         <Exercises
-          // ✅ Sirf zaroori props pass karein
           exercises={exercises}
           bodyPart={bodyPart}
         />
