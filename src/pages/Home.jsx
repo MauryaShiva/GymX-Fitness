@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Fuse from "fuse.js";
 
@@ -40,6 +40,19 @@ const Home = () => {
     setBodyPart(`${searchTerm}`);
   };
 
+  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
+
+  useEffect(() => {
+    const handleGlobalSearch = () => {
+      setIsMobileSearchOpen(true);
+    };
+
+    window.addEventListener("global-search", handleGlobalSearch);
+    return () => {
+      window.removeEventListener("global-search", handleGlobalSearch);
+    };
+  }, []);
+
   const handleBodyPartChange = (part) => {
     setBodyPart(part);
     if (part === "all") {
@@ -69,6 +82,8 @@ const Home = () => {
           onSearch={handleSearch}
           bodyPart={bodyPart}
           setBodyPart={handleBodyPartChange}
+          isMobileSearchOpen={isMobileSearchOpen}
+          setIsMobileSearchOpen={setIsMobileSearchOpen}
         />
       </motion.div>
 

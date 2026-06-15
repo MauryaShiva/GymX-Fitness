@@ -25,7 +25,7 @@ const SimilarExercises = ({ targetMuscleExercises, equipmentExercises }) => {
       viewport={{ once: true, amount: 0.2 }}
       transition={{ duration: 0.6 }}
     >
-      <h2 className="text-2xl sm:text-3xl font-bold text-center mb-8 text-gray-800">
+      <h2 className="text-2xl sm:text-3xl font-bold text-center mb-8 text-white">
         Exercises that target the same{" "}
         <span className="text-red-500 capitalize">muscle group</span>
       </h2>
@@ -39,7 +39,7 @@ const SimilarExercises = ({ targetMuscleExercises, equipmentExercises }) => {
         )}
       </div>
 
-      <h2 className="text-2xl sm:text-3xl font-bold text-center mt-16 mb-8 text-gray-800">
+      <h2 className="text-2xl sm:text-3xl font-bold text-center mt-16 mb-8 text-white">
         Exercises that use the same{" "}
         <span className="text-red-500 capitalize">equipment</span>
       </h2>
