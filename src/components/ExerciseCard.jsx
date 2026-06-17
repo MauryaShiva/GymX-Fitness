@@ -1,12 +1,14 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 
 const ExerciseCard = ({ exercise }) => {
   return (
     // ✅ Main container: Dark theme, rounded corners, and a "group" class for hover effects
+    <motion.div whileTap={{ scale: 0.95 }} className="w-full max-w-[350px]">
     <Link
       to={`/exercise/${exercise.exerciseId}`}
-      className="relative w-[350px] h-[450px] bg-gray-800 rounded-xl overflow-hidden shadow-lg group transition-all duration-300 ease-in-out hover:shadow-2xl hover:shadow-red-500/20 transform hover:-translate-y-2"
+      className="block relative w-full h-[450px] bg-gray-800 rounded-2xl overflow-hidden shadow-lg group transition-all duration-300 ease-in-out hover:shadow-2xl hover:shadow-red-500/20 md:hover:-translate-y-2"
     >
       {/* ✅ Image with a subtle zoom effect on hover */}
       <img
@@ -37,6 +39,7 @@ const ExerciseCard = ({ exercise }) => {
         </h3>
       </div>
     </Link>
+    </motion.div>
   );
 };
 
