@@ -1,22 +1,47 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import Logo from "../assets/images/Logo.png";
+import { Search } from "lucide-react";
 
 const Navbar = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleSearchShortcut = () => {
+    if (location.pathname !== "/") {
+      navigate("/");
+      // Wait for navigation then trigger search
+      setTimeout(() => {
+        window.dispatchEvent(new CustomEvent("global-search"));
+      }, 100);
+    } else {
+      window.dispatchEvent(new CustomEvent("global-search"));
+    }
+  };
+
   return (
-    <nav className="fixed top-0 z-50 w-full bg-white px-4 sm:px-8 md:px-12 py-3 sm:py-4 shadow-lg border-b border-gray-100">
+    <nav className="fixed top-0 z-50 w-full bg-white/80 backdrop-blur-md pt-safe px-4 sm:px-8 md:px-12 py-3 sm:py-4 shadow-sm border-b border-gray-100">
       <div className="flex items-center justify-between max-w-7xl mx-auto">
         {/* Logo */}
         <NavLink to="/" className="flex items-center">
           <img
             src={Logo}
             alt="GymX Logo"
-            className="w-10 h-10 sm:w-12 sm:h-12"
+            className="w-8 h-8 sm:w-12 sm:h-12 object-contain"
           />
+          <span className="ml-2 font-bold text-xl md:hidden">GymX</span>
         </NavLink>
 
-        {/* Navigation Links */}
-        <div className="flex items-center gap-8 text-base font-medium">
+        {/* Mobile Search Shortcut */}
+        <button
+          onClick={handleSearchShortcut}
+          className="md:hidden p-2 text-gray-600 hover:text-red-500 transition-colors"
+        >
+          <Search className="w-6 h-6" />
+        </button>
+
+        {/* Desktop Navigation Links (Hidden on Mobile) */}
+        <div className="hidden md:flex items-center gap-8 text-base font-medium">
           <NavLink
             to="/"
             className={({ isActive }) =>

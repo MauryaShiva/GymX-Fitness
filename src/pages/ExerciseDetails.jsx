@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { ArrowLeft } from "lucide-react";
 
 import allExercisesData from "../data/exercises.json";
 import { fetchData, youtubeOptions } from "../utils/fetchData";
@@ -11,12 +12,12 @@ import SimilarExercises from "../components/SimilarExercises.jsx";
 import Loader from "../components/Loader.jsx";
 
 const ExerciseDetails = () => {
-  // --- Saara State aur Logic jaisa tha waisa hi hai ---
   const [exerciseDetail, setExerciseDetail] = useState(null);
   const [exerciseVideos, setExerciseVideos] = useState([]);
   const [targetMuscleExercises, setTargetMuscleExercises] = useState([]);
   const [equipmentExercises, setEquipmentExercises] = useState([]);
   const { id } = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -69,50 +70,46 @@ const ExerciseDetails = () => {
   if (!exerciseDetail) {
     return <Loader />;
   }
-  // --- Logic mein koi badlav nahi ---
 
   return (
-    // ✅ New UI: A clean, high-contrast light theme for better readability.
     <motion.main
-      className="bg-gray-50 text-gray-900 min-h-screen px-4 sm:px-6 lg:px-8"
+      className="bg-gray-50 text-gray-900 min-h-screen pb-24 md:pb-0" // Extra padding for mobile bottom nav
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: "easeInOut" }}
     >
-      <div className="max-w-7xl mx-auto py-12 md:py-20">
-        {/*
-          NOTE: For the best look, the <Detail /> component should be updated
-          to use this new light theme with teal accents.
-        */}
-        <section className="mb-20">
+      {/* Mobile Back Button (App-like feel) */}
+      <div className="md:hidden sticky top-[60px] z-40 bg-gray-50/90 backdrop-blur-md px-4 py-3 border-b border-gray-200">
+        <button
+          onClick={() => navigate(-1)}
+          className="flex items-center text-gray-800 font-semibold active:text-red-500"
+        >
+          <ArrowLeft className="w-5 h-5 mr-2" />
+          Back
+        </button>
+      </div>
+
+      <div className="max-w-7xl mx-auto md:py-12">
+        <section className="mb-12 md:mb-20">
           <Detail exerciseDetail={exerciseDetail} />
         </section>
 
-        {/* ✅ Stylized Divider: Updated for the light theme. */}
-        <div className="w-full flex justify-center my-20">
-          <div className="w-1/3 h-px bg-gray-200"></div>
+        <div className="w-full flex justify-center my-10 md:my-20 px-4">
+          <div className="w-full md:w-1/3 h-px bg-gray-200"></div>
         </div>
 
-        {/*
-          NOTE: The <ExerciseVideos /> component should be updated to match,
-          with headings and links using the new teal accent color (e.g., text-teal-500).
-        */}
-        <section className="mb-20">
+        <section className="mb-12 md:mb-20 px-4 sm:px-6 lg:px-8">
           <ExerciseVideos
             exerciseVideos={exerciseVideos}
             name={exerciseDetail.name}
           />
         </section>
 
-        <div className="w-full flex justify-center my-20">
-          <div className="w-1/3 h-px bg-gray-200"></div>
+        <div className="w-full flex justify-center my-10 md:my-20 px-4">
+          <div className="w-full md:w-1/3 h-px bg-gray-200"></div>
         </div>
 
-        {/*
-          NOTE: The <SimilarExercises /> component and its cards should be
-          redesigned for a light background to complete the look.
-        */}
-        <section>
+        <section className="px-4 sm:px-6 lg:px-8">
           <SimilarExercises
             targetMuscleExercises={targetMuscleExercises}
             equipmentExercises={equipmentExercises}
