@@ -40,7 +40,7 @@ const Detail = ({ exerciseDetail }) => {
   return (
     // ✅ Wrap the main container in a motion.div for entry animation
     <motion.div
-      className="flex flex-col lg:flex-row p-5 pt-safe items-center gap-10"
+      className="flex flex-col lg:flex-row p-5 items-center gap-10"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
@@ -50,7 +50,7 @@ const Detail = ({ exerciseDetail }) => {
         src={gifUrl}
         alt={name}
         loading="lazy"
-        className="w-full max-w-md lg:max-w-lg shadow-lg rounded-lg object-cover h-auto md:h-96 lg:h-auto"
+        className="w-full max-w-md lg:max-w-lg shadow-lg rounded-lg"
       />
 
       {/* ✅ Animate the text content as well */}
@@ -81,10 +81,10 @@ const Detail = ({ exerciseDetail }) => {
         ))}
 
         {/* ✅ Interactive Instructions Section */}
-        <div className="mt-4 pb-safe relative">
+        <div className="mt-4">
           <button
             onClick={() => setShowInstructions(!showInstructions)}
-            className="bg-red-500 text-white font-bold py-3 px-6 rounded-md hover:bg-red-600 transition duration-300 w-full sticky bottom-4 z-10 shadow-lg"
+            className="bg-red-500 text-white font-bold py-2 px-6 rounded-md hover:bg-red-600 transition duration-300"
           >
             {showInstructions ? "Hide Instructions" : "Show Instructions"}
           </button>

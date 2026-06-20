@@ -4,7 +4,7 @@ import { YouTube, Instagram, Facebook, Twitter } from "@mui/icons-material";
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-950 text-white mt-24 border-t border-gray-800 pb-24 md:pb-0">
+    <footer className="bg-gray-950 text-white mt-24 border-t border-gray-800">
       <div className="max-w-screen-xl mx-auto px-6 py-16">
         {/* Top Grid Section */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
