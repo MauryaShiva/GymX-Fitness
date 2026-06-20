@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Fuse from "fuse.js";
 
@@ -54,8 +54,18 @@ const Home = () => {
     }
   };
 
+  useEffect(() => {
+    const handleGlobalSearch = (e) => {
+      handleSearch(e.detail);
+    };
+    window.addEventListener("global-search", handleGlobalSearch);
+    return () => {
+      window.removeEventListener("global-search", handleGlobalSearch);
+    };
+  }, []);
+
   return (
-    <div>
+    <motion.div exit={{ opacity: 0, y: -20 }}>
       <HeroBanner />
 
       <motion.div
@@ -84,7 +94,7 @@ const Home = () => {
           bodyPart={bodyPart}
         />
       </motion.div>
-    </div>
+    </motion.div>
   );
 };
 

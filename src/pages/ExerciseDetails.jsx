@@ -77,6 +77,7 @@ const ExerciseDetails = () => {
       className="bg-gray-50 text-gray-900 min-h-screen px-4 sm:px-6 lg:px-8"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.5, ease: "easeInOut" }}
     >
       <div className="max-w-7xl mx-auto py-12 md:py-20">
