@@ -62,6 +62,7 @@ const Home = () => {
     return () => {
       window.removeEventListener("global-search", handleGlobalSearch);
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
