@@ -74,17 +74,17 @@ const ExerciseDetails = () => {
   return (
     // ✅ New UI: A clean, high-contrast light theme for better readability.
     <motion.main
-      className="bg-gray-50 text-gray-900 min-h-screen px-4 sm:px-6 lg:px-8"
+      className="bg-gray-50 text-gray-900 min-h-screen md:px-4 sm:px-6 lg:px-8 relative"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: "easeInOut" }}
     >
-      <div className="max-w-7xl mx-auto py-12 md:py-20">
+      <div className="max-w-7xl mx-auto md:py-12 md:py-20">
         {/*
           NOTE: For the best look, the <Detail /> component should be updated
           to use this new light theme with teal accents.
         */}
-        <section className="mb-20">
+        <section className="mb-10 md:mb-20 -mx-4 md:mx-0">
           <Detail exerciseDetail={exerciseDetail} />
         </section>
 
@@ -112,12 +112,19 @@ const ExerciseDetails = () => {
           NOTE: The <SimilarExercises /> component and its cards should be
           redesigned for a light background to complete the look.
         */}
-        <section>
+        <section className="px-4 md:px-0 pb-20 md:pb-0">
           <SimilarExercises
             targetMuscleExercises={targetMuscleExercises}
             equipmentExercises={equipmentExercises}
           />
         </section>
+      </div>
+
+      {/* ✅ Sticky Bottom Action Bar (Mobile Only) to simulate native app feel */}
+      <div className="fixed bottom-0 left-0 right-0 p-4 bg-white/90 backdrop-blur-md border-t border-gray-200 md:hidden pb-safe z-40 mb-16">
+         <button className="w-full bg-red-600 text-white font-bold text-lg py-4 rounded-full shadow-lg shadow-red-500/30 active:scale-95 transition-transform">
+            Start Exercise
+         </button>
       </div>
     </motion.main>
   );

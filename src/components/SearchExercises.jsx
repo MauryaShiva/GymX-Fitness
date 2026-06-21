@@ -85,13 +85,22 @@ const SearchExercises = ({ onSearch, bodyPart, setBodyPart }) => {
         </div>
         {/* ✅ Revamped the input for a glassy, modern look */}
         <input
+          id="desktop-search-input"
           className="w-full h-16 bg-gray-800/50 text-white placeholder-gray-500 border border-gray-700 rounded-full py-2 pl-16 pr-40 text-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent backdrop-blur-sm transition-all duration-300"
           value={search}
           onChange={handleInputChange}
           placeholder="Search exercises, muscles, equipment..."
           type="text"
           onKeyPress={(e) => e.key === "Enter" && handleLocalSearch()}
-          onClick={(e) => e.target.select()}
+          onClick={(e) => {
+            // If on mobile, open overlay instead of typing here directly to prevent keyboard zoom issues
+            if (window.innerWidth < 768) {
+              e.target.blur();
+              window.dispatchEvent(new CustomEvent("global-search"));
+            } else {
+              e.target.select();
+            }
+          }}
         />
         {/* ✅ Upgraded the button with a gradient and interactive effects */}
         <button
