@@ -138,9 +138,9 @@ const Exercises = ({ exercises, bodyPart }) => {
   }
 
   return (
-    <section id="exercises" className="mt-12 p-5">
-      <h2 className="text-3xl lg:text-4xl font-bold mb-8 text-text-primary capitalize">
-        Showing Results for: <span className="text-primary">{bodyPart}</span>
+    <section id="exercises" className="mt-8 md:mt-12 px-4 md:px-5">
+      <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-6 md:mb-8 text-text-primary capitalize text-center md:text-left">
+        Results for: <span className="text-primary">{bodyPart}</span>
       </h2>
 
       <AnimatePresence>
@@ -149,23 +149,23 @@ const Exercises = ({ exercises, bodyPart }) => {
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12 min-h-[500px]"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 lg:gap-12 min-h-[500px] justify-items-center"
         >
           {currentExercises.length ? (
             currentExercises.map((exercise) => (
-              <motion.div variants={itemVariants} key={exercise.exerciseId}>
+              <motion.div variants={itemVariants} key={exercise.exerciseId} className="w-full flex justify-center">
                 <ExerciseCard exercise={exercise} />
               </motion.div>
             ))
           ) : (
-            <p className="text-text-secondary col-span-3 text-center self-center">
+            <p className="text-text-secondary col-span-1 sm:col-span-2 lg:col-span-3 text-center self-center py-20 text-lg">
               No exercises found for this category.
             </p>
           )}
         </motion.div>
       </AnimatePresence>
 
-      <div className="mt-16 lg:mt-24 flex justify-center">
+      <div className="mt-12 md:mt-16 lg:mt-24 flex justify-center overflow-x-auto pb-4">
         {exercises.length > exercisesPerPage && (
           <CustomPagination
             exercisesPerPage={exercisesPerPage}

@@ -40,23 +40,28 @@ const Detail = ({ exerciseDetail }) => {
   return (
     // ✅ Wrap the main container in a motion.div for entry animation
     <motion.div
-      className="flex flex-col lg:flex-row p-5 items-center gap-10"
+      className="flex flex-col lg:flex-row items-center gap-6 lg:gap-10 pb-24 md:pb-0"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
     >
-      <motion.img
+      {/* Hero Image Container - Edge to edge on mobile */}
+      <motion.div
         variants={itemVariants}
-        src={gifUrl}
-        alt={name}
-        loading="lazy"
-        className="w-full max-w-md lg:max-w-lg shadow-lg rounded-lg"
-      />
+        className="w-full lg:max-w-lg bg-white md:rounded-3xl md:shadow-xl overflow-hidden flex justify-center items-center p-4 md:p-8"
+      >
+        <img
+          src={gifUrl}
+          alt={name}
+          loading="lazy"
+          className="w-full h-auto object-contain max-h-[400px] mix-blend-multiply"
+        />
+      </motion.div>
 
       {/* ✅ Animate the text content as well */}
       <motion.div
         variants={itemVariants}
-        className="flex flex-col gap-5 lg:gap-6 w-full"
+        className="flex flex-col gap-5 lg:gap-6 w-full px-5 md:px-0"
       >
         <h1 className="text-3xl lg:text-5xl font-bold capitalize text-gray-800">
           {name}

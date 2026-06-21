@@ -1,11 +1,12 @@
-import React, { useState } from "react";
-import { motion } from "framer-motion";
+import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import Fuse from "fuse.js";
 
 import allExercisesData from "../data/exercises.json"; // Local data import
 import HeroBanner from "../components/HeroBanner.jsx";
 import SearchExercises from "../components/SearchExercises.jsx";
 import Exercises from "../components/Exercises.jsx";
+import MobileSearchOverlay from "../components/MobileSearchOverlay.jsx";
 
 const sectionVariants = {
   hidden: { opacity: 0, y: 50 },
@@ -20,6 +21,28 @@ const Home = () => {
   // ✅ State ab local data se initialize ho raha hai
   const [exercises, setExercises] = useState(allExercisesData);
   const [bodyPart, setBodyPart] = useState("all");
+  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
+
+  useEffect(() => {
+    const handleGlobalSearch = () => {
+      // If mobile, open overlay, else focus search bar
+      if (window.innerWidth < 768) {
+        setIsMobileSearchOpen(true);
+      } else {
+        const desktopSearchInput = document.getElementById("desktop-search-input");
+        if (desktopSearchInput) {
+           desktopSearchInput.focus();
+        } else {
+            // fallback if we are scrolled away
+            document.getElementById("search-section")?.scrollIntoView({ behavior: "smooth" });
+            setTimeout(() => document.getElementById("desktop-search-input")?.focus(), 500);
+        }
+      }
+    };
+
+    window.addEventListener("global-search", handleGlobalSearch);
+    return () => window.removeEventListener("global-search", handleGlobalSearch);
+  }, []);
 
   // Fuse.js setup for smart search
   const fuse = new Fuse(allExercisesData, {
@@ -56,9 +79,20 @@ const Home = () => {
 
   return (
     <div>
+      <AnimatePresence>
+        {isMobileSearchOpen && (
+          <MobileSearchOverlay
+            isOpen={isMobileSearchOpen}
+            onClose={() => setIsMobileSearchOpen(false)}
+            onSearch={handleSearch}
+          />
+        )}
+      </AnimatePresence>
+
       <HeroBanner />
 
       <motion.div
+        id="search-section"
         variants={sectionVariants}
         initial="hidden"
         whileInView="visible"
