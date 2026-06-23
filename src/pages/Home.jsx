@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Fuse from "fuse.js";
 
@@ -14,12 +14,33 @@ const sectionVariants = {
     y: 0,
     transition: { duration: 0.6, ease: "easeOut" },
   },
+  exit: {
+    opacity: 0,
+    y: -50,
+    transition: { duration: 0.3 }
+  }
 };
 
 const Home = () => {
   // ✅ State ab local data se initialize ho raha hai
   const [exercises, setExercises] = useState(allExercisesData);
   const [bodyPart, setBodyPart] = useState("all");
+  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
+
+  useEffect(() => {
+    const handleGlobalSearch = () => {
+      // Check if mobile via window width
+      if (window.innerWidth < 768) {
+        setIsMobileSearchOpen(true);
+      } else {
+        document.getElementById("search-input")?.focus();
+        document.getElementById("search-section")?.scrollIntoView({ behavior: "smooth" });
+      }
+    };
+
+    window.addEventListener("global-search", handleGlobalSearch);
+    return () => window.removeEventListener("global-search", handleGlobalSearch);
+  }, []);
 
   // Fuse.js setup for smart search
   const fuse = new Fuse(allExercisesData, {
@@ -55,7 +76,12 @@ const Home = () => {
   };
 
   return (
-    <div>
+    <motion.div
+      variants={sectionVariants}
+      initial="hidden"
+      animate="visible"
+      exit="exit"
+    >
       <HeroBanner />
 
       <motion.div
@@ -63,12 +89,15 @@ const Home = () => {
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.2 }}
+        id="search-section"
       >
         <SearchExercises
           // ✅ Naye functions ko as a prop pass karein
           onSearch={handleSearch}
           bodyPart={bodyPart}
           setBodyPart={handleBodyPartChange}
+          isMobileSearchOpen={isMobileSearchOpen}
+          setIsMobileSearchOpen={setIsMobileSearchOpen}
         />
       </motion.div>
 
@@ -84,7 +113,7 @@ const Home = () => {
           bodyPart={bodyPart}
         />
       </motion.div>
-    </div>
+    </motion.div>
   );
 };
 
