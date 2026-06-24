@@ -1,11 +1,24 @@
-import React, { useState } from "react";
-import { motion } from "framer-motion";
+import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import Fuse from "fuse.js";
+import { Search } from "lucide-react";
 
 import allExercisesData from "../data/exercises.json"; // Local data import
 import HeroBanner from "../components/HeroBanner.jsx";
 import SearchExercises from "../components/SearchExercises.jsx";
 import Exercises from "../components/Exercises.jsx";
+
+const pageVariants = {
+  initial: { opacity: 0, x: -20 },
+  in: { opacity: 1, x: 0 },
+  out: { opacity: 0, x: 20 }
+};
+
+const pageTransition = {
+  type: "tween",
+  ease: "anticipate",
+  duration: 0.3
+};
 
 const sectionVariants = {
   hidden: { opacity: 0, y: 50 },
@@ -17,9 +30,9 @@ const sectionVariants = {
 };
 
 const Home = () => {
-  // ✅ State ab local data se initialize ho raha hai
   const [exercises, setExercises] = useState(allExercisesData);
   const [bodyPart, setBodyPart] = useState("all");
+  const [isSearchOverlayOpen, setIsSearchOverlayOpen] = useState(false);
 
   // Fuse.js setup for smart search
   const fuse = new Fuse(allExercisesData, {
@@ -27,7 +40,6 @@ const Home = () => {
     threshold: 0.4,
   });
 
-  // ✅ Filtering aur searching ka saara logic ab yahan hai
   const handleSearch = (searchTerm) => {
     if (searchTerm === "") {
       setExercises(allExercisesData);
@@ -38,6 +50,7 @@ const Home = () => {
     const searchedExercises = results.map((result) => result.item);
     setExercises(searchedExercises);
     setBodyPart(`${searchTerm}`);
+    setIsSearchOverlayOpen(false); // Close overlay after search
   };
 
   const handleBodyPartChange = (part) => {
@@ -54,23 +67,65 @@ const Home = () => {
     }
   };
 
+  useEffect(() => {
+    const handleGlobalSearch = () => {
+      setIsSearchOverlayOpen(true);
+    };
+
+    window.addEventListener('global-search', handleGlobalSearch);
+
+    return () => {
+      window.removeEventListener('global-search', handleGlobalSearch);
+    };
+  }, []);
+
   return (
-    <div>
+    <motion.div
+      initial="initial"
+      animate="in"
+      exit="out"
+      variants={pageVariants}
+      transition={pageTransition}
+      className="relative"
+    >
       <HeroBanner />
 
+      {/* Floating Action Button for Mobile Search (Optional, if you want an explicit button besides the header) */}
+      <button
+        className="md:hidden fixed bottom-20 right-4 z-40 bg-red-600 text-white p-4 rounded-full shadow-xl shadow-red-600/30 active:scale-95 transition-transform"
+        onClick={() => setIsSearchOverlayOpen(true)}
+      >
+        <Search className="w-6 h-6" />
+      </button>
+
+      {/* Desktop Search / Inline Search */}
       <motion.div
         variants={sectionVariants}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.2 }}
+        className="hidden md:block" // Hide inline on mobile
       >
         <SearchExercises
-          // ✅ Naye functions ko as a prop pass karein
           onSearch={handleSearch}
           bodyPart={bodyPart}
           setBodyPart={handleBodyPartChange}
+          isOverlay={false}
         />
       </motion.div>
+
+      {/* Mobile Search Overlay */}
+      <AnimatePresence>
+        {isSearchOverlayOpen && (
+          <SearchExercises
+            onSearch={handleSearch}
+            bodyPart={bodyPart}
+            setBodyPart={handleBodyPartChange}
+            isOverlay={true}
+            onClose={() => setIsSearchOverlayOpen(false)}
+          />
+        )}
+      </AnimatePresence>
 
       <motion.div
         variants={sectionVariants}
@@ -79,12 +134,11 @@ const Home = () => {
         viewport={{ once: true, amount: 0.2 }}
       >
         <Exercises
-          // ✅ Sirf zaroori props pass karein
           exercises={exercises}
           bodyPart={bodyPart}
         />
       </motion.div>
-    </div>
+    </motion.div>
   );
 };
 
