@@ -3,36 +3,30 @@ import { Link } from "react-router-dom";
 
 const ExerciseCard = ({ exercise }) => {
   return (
-    // ✅ Main container: Dark theme, rounded corners, and a "group" class for hover effects
     <Link
       to={`/exercise/${exercise.exerciseId}`}
-      className="relative w-[350px] h-[450px] bg-gray-800 rounded-xl overflow-hidden shadow-lg group transition-all duration-300 ease-in-out hover:shadow-2xl hover:shadow-red-500/20 transform hover:-translate-y-2"
+      className="relative w-full aspect-[4/5] sm:h-[450px] sm:w-[350px] bg-surface rounded-2xl overflow-hidden shadow-md group transition-all duration-300 ease-in-out hover:shadow-2xl hover:shadow-primary/20 transform hover:-translate-y-2 active:scale-95"
     >
-      {/* ✅ Image with a subtle zoom effect on hover */}
       <img
         src={exercise.gifUrl}
         alt={exercise.name}
         loading="lazy"
-        className="w-full h-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-110"
+        className="w-full h-full object-cover transition-transform duration-700 ease-in-out group-hover:scale-110"
       />
 
-      {/* ✅ Gradient overlay for better text readability and a professional look */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent"></div>
 
-      {/* ✅ Container for all the text content, positioned at the bottom */}
-      <div className="absolute bottom-0 left-0 right-0 p-5 text-white">
-        {/* ✅ Tags with a modern, semi-transparent background */}
-        <div className="flex flex-row gap-2 mb-3">
-          <span className="bg-red-500/80 text-white text-xs font-semibold rounded-full capitalize py-1 px-3 backdrop-blur-sm">
+      <div className="absolute bottom-0 left-0 right-0 p-6 text-text-primary">
+        <div className="flex flex-wrap gap-2 mb-4">
+          <span className="bg-primary/20 text-primary border border-primary/30 text-xs font-bold rounded-full capitalize py-1.5 px-4 backdrop-blur-md">
             {exercise.bodyParts[0]}
           </span>
-          <span className="bg-yellow-500/80 text-white text-xs font-semibold rounded-full capitalize py-1 px-3 backdrop-blur-sm">
+          <span className="bg-secondary/20 text-secondary border border-secondary/30 text-xs font-bold rounded-full capitalize py-1.5 px-4 backdrop-blur-md">
             {exercise.targetMuscles[0]}
           </span>
         </div>
 
-        {/* ✅ Exercise name with improved typography */}
-        <h3 className="font-bold capitalize text-2xl tracking-tight">
+        <h3 className="font-extrabold capitalize text-2xl tracking-tight leading-tight group-hover:text-primary transition-colors duration-300">
           {exercise.name}
         </h3>
       </div>
