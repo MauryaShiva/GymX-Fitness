@@ -40,32 +40,36 @@ const Detail = ({ exerciseDetail }) => {
   return (
     // ✅ Wrap the main container in a motion.div for entry animation
     <motion.div
-      className="flex flex-col lg:flex-row p-5 items-center gap-10"
+      className="flex flex-col lg:flex-row p-0 md:p-5 items-center gap-0 md:gap-10"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
     >
-      <motion.img
+      <motion.div
         variants={itemVariants}
-        src={gifUrl}
-        alt={name}
-        loading="lazy"
-        className="w-full max-w-md lg:max-w-lg shadow-lg rounded-lg"
-      />
+        className="w-full lg:max-w-lg md:rounded-3xl overflow-hidden shadow-none md:shadow-2xl mb-6 md:mb-0"
+      >
+        <img
+          src={gifUrl}
+          alt={name}
+          loading="lazy"
+          className="w-full h-auto object-cover rounded-none md:rounded-2xl"
+        />
+      </motion.div>
 
       {/* ✅ Animate the text content as well */}
       <motion.div
         variants={itemVariants}
-        className="flex flex-col gap-5 lg:gap-6 w-full"
+        className="flex flex-col gap-5 lg:gap-6 w-full px-4 md:px-0"
       >
-        <h1 className="text-3xl lg:text-5xl font-bold capitalize text-gray-800">
+        <h1 className="text-3xl lg:text-5xl font-bold capitalize text-gray-800 tracking-tight">
           {name}
         </h1>
-        <p className="text-base lg:text-lg text-gray-600">
+        <p className="text-base lg:text-lg text-gray-600 leading-relaxed">
           Exercises keep you strong.{" "}
-          <span className="capitalize font-semibold">{name}</span> is one of the
+          <span className="capitalize font-semibold text-gray-900">{name}</span> is one of the
           best exercises to target your{" "}
-          <span className="font-semibold">{targetMuscles[0]}</span>. It will
+          <span className="font-semibold text-gray-900">{targetMuscles[0]}</span>. It will
           help you improve your mood and gain energy.
         </p>
 
@@ -80,19 +84,12 @@ const Detail = ({ exerciseDetail }) => {
           </div>
         ))}
 
-        {/* ✅ Interactive Instructions Section */}
-        <div className="mt-4">
-          <button
-            onClick={() => setShowInstructions(!showInstructions)}
-            className="bg-red-500 text-white font-bold py-2 px-6 rounded-md hover:bg-red-600 transition duration-300"
-          >
-            {showInstructions ? "Hide Instructions" : "Show Instructions"}
-          </button>
-
+        {/* ✅ Interactive Instructions Section (Sticky on Mobile) */}
+        <div className="mt-4 pb-safe">
           <AnimatePresence>
             {showInstructions && (
               <motion.ol
-                className="list-decimal list-inside mt-4 space-y-2 text-gray-600"
+                className="list-decimal list-inside mt-4 mb-24 md:mb-4 space-y-2 text-gray-600"
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: "auto" }}
                 exit={{ opacity: 0, height: 0 }}
@@ -103,6 +100,16 @@ const Detail = ({ exerciseDetail }) => {
               </motion.ol>
             )}
           </AnimatePresence>
+
+          {/* Sticky action container for mobile */}
+          <div className="fixed md:relative bottom-16 md:bottom-auto left-0 right-0 p-4 md:p-0 bg-white/90 md:bg-transparent backdrop-blur-md md:backdrop-blur-none border-t border-gray-200 md:border-none z-40 md:z-auto">
+            <button
+              onClick={() => setShowInstructions(!showInstructions)}
+              className="bg-red-500 text-white font-bold py-3 px-6 rounded-xl hover:bg-red-600 transition duration-300 w-full md:w-auto active:scale-95 shadow-md"
+            >
+              {showInstructions ? "Hide Instructions" : "Show Instructions"}
+            </button>
+          </div>
         </div>
       </motion.div>
     </motion.div>
