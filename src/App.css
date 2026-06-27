@@ -1,1 +1,29 @@
 @import "tailwindcss";
+
+@theme {
+  --color-primary: #ff2625;
+  --color-primary-dark: #cc1e1d;
+  --color-background-dark: #000000;
+  --color-surface-dark: #1f2937;
+  --color-background-light: #fffafb;
+}
+
+@utility pb-safe {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+@utility pt-safe {
+  padding-top: env(safe-area-inset-top);
+}
+
+@utility mb-safe {
+  margin-bottom: env(safe-area-inset-bottom);
+}
+
+@utility min-h-safe {
+  min-height: calc(100vh + env(safe-area-inset-bottom));
+}
+
+body {
+  -webkit-tap-highlight-color: transparent;
+}
