@@ -1,1 +1,23 @@
 @import "tailwindcss";
+
+@utility pb-safe {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+@utility pt-safe {
+  padding-top: env(safe-area-inset-top);
+}
+
+@utility px-safe {
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+
+@theme {
+  --color-background: #121212;
+  --color-surface: #1e1e1e;
+  --color-primary: #03dac6;
+  --color-secondary: #bb86fc;
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #b3b3b3;
+}
