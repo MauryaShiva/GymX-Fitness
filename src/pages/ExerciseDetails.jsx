@@ -72,47 +72,36 @@ const ExerciseDetails = () => {
   // --- Logic mein koi badlav nahi ---
 
   return (
-    // ✅ New UI: A clean, high-contrast light theme for better readability.
+    // ✅ New UI: Dark theme to match the app style
     <motion.main
-      className="bg-gray-50 text-gray-900 min-h-screen px-4 sm:px-6 lg:px-8"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, ease: "easeInOut" }}
+      className="bg-background text-text-primary min-h-screen"
+      initial={{ opacity: 0, x: 20 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -20 }}
+      transition={{ duration: 0.4, ease: "easeInOut" }}
     >
-      <div className="max-w-7xl mx-auto py-12 md:py-20">
-        {/*
-          NOTE: For the best look, the <Detail /> component should be updated
-          to use this new light theme with teal accents.
-        */}
-        <section className="mb-20">
+      <div className="max-w-7xl mx-auto py-8 md:py-12">
+        <section className="mb-16">
           <Detail exerciseDetail={exerciseDetail} />
         </section>
 
-        {/* ✅ Stylized Divider: Updated for the light theme. */}
-        <div className="w-full flex justify-center my-20">
-          <div className="w-1/3 h-px bg-gray-200"></div>
+        {/* ✅ Stylized Divider */}
+        <div className="w-full flex justify-center my-16">
+          <div className="w-1/3 h-px bg-gray-800"></div>
         </div>
 
-        {/*
-          NOTE: The <ExerciseVideos /> component should be updated to match,
-          with headings and links using the new teal accent color (e.g., text-teal-500).
-        */}
-        <section className="mb-20">
+        <section className="mb-16">
           <ExerciseVideos
             exerciseVideos={exerciseVideos}
             name={exerciseDetail.name}
           />
         </section>
 
-        <div className="w-full flex justify-center my-20">
-          <div className="w-1/3 h-px bg-gray-200"></div>
+        <div className="w-full flex justify-center my-16">
+          <div className="w-1/3 h-px bg-gray-800"></div>
         </div>
 
-        {/*
-          NOTE: The <SimilarExercises /> component and its cards should be
-          redesigned for a light background to complete the look.
-        */}
-        <section>
+        <section className="mb-16">
           <SimilarExercises
             targetMuscleExercises={targetMuscleExercises}
             equipmentExercises={equipmentExercises}
