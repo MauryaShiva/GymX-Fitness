@@ -40,6 +40,17 @@ const Home = () => {
     setBodyPart(`${searchTerm}`);
   };
 
+  // Listen for execute-search event from MobileSearchOverlay
+  React.useEffect(() => {
+    const handleGlobalSearchExecute = (e) => {
+      const term = e.detail;
+      handleSearch(term);
+      document.getElementById("exercises")?.scrollIntoView({ behavior: "smooth" });
+    };
+    window.addEventListener("execute-search", handleGlobalSearchExecute);
+    return () => window.removeEventListener("execute-search", handleGlobalSearchExecute);
+  }, []);
+
   const handleBodyPartChange = (part) => {
     setBodyPart(part);
     if (part === "all") {
