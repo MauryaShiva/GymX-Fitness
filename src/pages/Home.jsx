@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Fuse from "fuse.js";
 
@@ -53,6 +53,17 @@ const Home = () => {
       setExercises(filtered);
     }
   };
+
+  useEffect(() => {
+    // Listen for custom search events from mobile overlay and bottom nav
+    const handleGlobalSearch = (e) => {
+      const term = e.detail;
+      handleSearch(term);
+    };
+
+    window.addEventListener('execute-search', handleGlobalSearch);
+    return () => window.removeEventListener('execute-search', handleGlobalSearch);
+  }, []);
 
   return (
     <div>
