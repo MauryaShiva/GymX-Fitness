@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Fuse from "fuse.js";
+import { useLocation } from "react-router-dom";
 
 import allExercisesData from "../data/exercises.json"; // Local data import
 import HeroBanner from "../components/HeroBanner.jsx";
@@ -16,16 +17,49 @@ const sectionVariants = {
   },
 };
 
+const pageVariants = {
+  initial: { opacity: 0, x: -20 },
+  in: { opacity: 1, x: 0 },
+  out: { opacity: 0, x: 20 }
+};
+
+const pageTransition = {
+  type: "tween",
+  ease: "anticipate",
+  duration: 0.4
+};
+
 const Home = () => {
+  const location = useLocation();
   // ✅ State ab local data se initialize ho raha hai
   const [exercises, setExercises] = useState(allExercisesData);
   const [bodyPart, setBodyPart] = useState("all");
+  const [isSearchOverlayOpen, setIsSearchOverlayOpen] = useState(false);
 
   // Fuse.js setup for smart search
   const fuse = new Fuse(allExercisesData, {
     keys: ["name", "targetMuscles", "equipments", "bodyParts"],
     threshold: 0.4,
   });
+
+  // Handle custom search events
+  useEffect(() => {
+    const handleExecuteSearch = () => {
+      setIsSearchOverlayOpen(true);
+    };
+
+    window.addEventListener("execute-search", handleExecuteSearch);
+
+    if (location.state && location.state.executeSearch) {
+      setIsSearchOverlayOpen(true);
+      // Clean up the state to prevent reopening on navigation back
+      window.history.replaceState({}, document.title);
+    }
+
+    return () => {
+      window.removeEventListener("execute-search", handleExecuteSearch);
+    };
+  }, [location]);
 
   // ✅ Filtering aur searching ka saara logic ab yahan hai
   const handleSearch = (searchTerm) => {
@@ -55,7 +89,13 @@ const Home = () => {
   };
 
   return (
-    <div>
+    <motion.div
+      initial="initial"
+      animate="in"
+      exit="out"
+      variants={pageVariants}
+      transition={pageTransition}
+    >
       <HeroBanner />
 
       <motion.div
@@ -69,6 +109,8 @@ const Home = () => {
           onSearch={handleSearch}
           bodyPart={bodyPart}
           setBodyPart={handleBodyPartChange}
+          isOverlayOpen={isSearchOverlayOpen}
+          setIsOverlayOpen={setIsSearchOverlayOpen}
         />
       </motion.div>
 
@@ -84,7 +126,7 @@ const Home = () => {
           bodyPart={bodyPart}
         />
       </motion.div>
-    </div>
+    </motion.div>
   );
 };
 
