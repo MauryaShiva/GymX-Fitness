@@ -1,11 +1,24 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import Fuse from "fuse.js";
+import { useLocation } from "react-router-dom";
 
-import allExercisesData from "../data/exercises.json"; // Local data import
+import allExercisesData from "../data/exercises.json";
 import HeroBanner from "../components/HeroBanner.jsx";
 import SearchExercises from "../components/SearchExercises.jsx";
 import Exercises from "../components/Exercises.jsx";
+
+const pageVariants = {
+  initial: { opacity: 0, x: -20 },
+  in: { opacity: 1, x: 0 },
+  out: { opacity: 0, x: 20 }
+};
+
+const pageTransition = {
+  type: "tween",
+  ease: "anticipate",
+  duration: 0.5
+};
 
 const sectionVariants = {
   hidden: { opacity: 0, y: 50 },
@@ -17,28 +30,25 @@ const sectionVariants = {
 };
 
 const Home = () => {
-  // ✅ State ab local data se initialize ho raha hai
   const [exercises, setExercises] = useState(allExercisesData);
   const [bodyPart, setBodyPart] = useState("all");
+  const location = useLocation();
 
-  // Fuse.js setup for smart search
-  const fuse = new Fuse(allExercisesData, {
-    keys: ["name", "targetMuscles", "equipments", "bodyParts"],
-    threshold: 0.4,
-  });
-
-  // ✅ Filtering aur searching ka saara logic ab yahan hai
-  const handleSearch = (searchTerm) => {
+  const handleSearch = useCallback((searchTerm) => {
     if (searchTerm === "") {
       setExercises(allExercisesData);
       setBodyPart("all");
       return;
     }
+    const fuse = new Fuse(allExercisesData, {
+      keys: ["name", "targetMuscles", "equipments", "bodyParts"],
+      threshold: 0.4,
+    });
     const results = fuse.search(searchTerm);
     const searchedExercises = results.map((result) => result.item);
     setExercises(searchedExercises);
     setBodyPart(`${searchTerm}`);
-  };
+  }, []);
 
   const handleBodyPartChange = (part) => {
     setBodyPart(part);
@@ -54,8 +64,30 @@ const Home = () => {
     }
   };
 
+  useEffect(() => {
+    // Check if we came from MobileSearchOverlay
+    if (location.state?.executeSearch) {
+      handleSearch(location.state.executeSearch);
+
+      // Clear the state so it doesn't re-trigger on un-related re-renders
+      window.history.replaceState({}, document.title)
+
+      // Scroll to exercises section
+      setTimeout(() => {
+        document.getElementById("exercises")?.scrollIntoView({ behavior: "smooth" });
+      }, 100);
+    }
+  }, [location.state, handleSearch]);
+
   return (
-    <div>
+    <motion.div
+      initial="initial"
+      animate="in"
+      exit="out"
+      variants={pageVariants}
+      transition={pageTransition}
+      className="pb-safe"
+    >
       <HeroBanner />
 
       <motion.div
@@ -65,7 +97,6 @@ const Home = () => {
         viewport={{ once: true, amount: 0.2 }}
       >
         <SearchExercises
-          // ✅ Naye functions ko as a prop pass karein
           onSearch={handleSearch}
           bodyPart={bodyPart}
           setBodyPart={handleBodyPartChange}
@@ -79,12 +110,11 @@ const Home = () => {
         viewport={{ once: true, amount: 0.2 }}
       >
         <Exercises
-          // ✅ Sirf zaroori props pass karein
           exercises={exercises}
           bodyPart={bodyPart}
         />
       </motion.div>
-    </div>
+    </motion.div>
   );
 };
 
