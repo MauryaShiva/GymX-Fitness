@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-// Assuming you have a data file for the weekly plan
+import { motion } from "framer-motion";
 import { weeklyPlan } from "../data/weeklyPlan";
-// Using lucide-react for clean, modern icons. Make sure to install it: npm install lucide-react
 import {
   Dumbbell,
   HeartPulse,
@@ -12,7 +11,18 @@ import {
   CalendarCheck,
 } from "lucide-react";
 
-// An object to map workout focus to a specific icon for visual flair
+const pageVariants = {
+  initial: { opacity: 0, x: -20 },
+  in: { opacity: 1, x: 0 },
+  out: { opacity: 0, x: 20 }
+};
+
+const pageTransition = {
+  type: "tween",
+  ease: "anticipate",
+  duration: 0.5
+};
+
 const focusIcons = {
   "Full Body": <Dumbbell className="w-5 h-5 mr-2" />,
   "Upper Body": <HeartPulse className="w-5 h-5 mr-2" />,
@@ -33,73 +43,68 @@ const HomeWorkouts = () => {
   const videoIds = selectedWorkout?.videos || [];
 
   return (
-    // ✅ Added a subtle background gradient for more visual depth
-    <div className="pt-24 min-h-screen px-6 lg:px-12 pb-12 bg-gradient-to-b from-gray-900 to-black text-white">
+    <motion.div
+      initial="initial"
+      animate="in"
+      exit="out"
+      variants={pageVariants}
+      transition={pageTransition}
+      className="min-h-screen px-4 md:px-6 lg:px-12 pb-safe bg-background text-text-primary mt-6"
+    >
       <div className="max-w-7xl mx-auto">
-        {/* ✅ Centered the header text for a more impactful title section */}
         <div className="text-center mb-12">
           <h1 className="text-4xl lg:text-6xl font-extrabold text-white mb-4 tracking-tight">
-            Weekly Home Plan
+            Weekly Plan
           </h1>
-          <p className="text-lg text-gray-400 max-w-2xl mx-auto">
-            Your personalized weekly workout schedule. Select a day to view your
-            video routines.
+          <p className="text-lg text-text-secondary max-w-2xl mx-auto">
+            Your personalized weekly workout schedule.
           </p>
         </div>
 
-        {/* Day Selector - Enhanced with gradients, shadows, and hover effects */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-4 mb-16">
+        <div className="flex overflow-x-auto hide-scrollbar pb-4 gap-4 mb-10 snap-x">
           {Object.values(weeklyPlan).map((dayPlan) => {
             const isSelected = selectedDay === dayPlan.day.toLowerCase();
             return (
-              <button
+              <motion.button
+                whileTap={{ scale: 0.95 }}
                 key={dayPlan.day}
                 onClick={() => setSelectedDay(dayPlan.day.toLowerCase())}
-                // ✅ Enhanced styling for buttons:
-                // - Added a subtle border and shadow for a "card" feel.
-                // - Improved hover and selected states for better interactivity.
-                className={`p-4 rounded-xl text-left transition-all duration-300 transform hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-black ${
+                className={`snap-center flex-shrink-0 w-36 p-4 rounded-2xl text-left transition-all duration-300 focus:outline-none ${
                   isSelected
-                    ? "bg-red-600 text-white shadow-lg scale-105 ring-2 ring-red-500"
-                    : "bg-gray-800 border border-gray-700 hover:bg-gray-700 hover:border-red-500"
+                    ? "bg-primary text-background shadow-lg shadow-primary/20"
+                    : "bg-surface border border-gray-800 text-text-primary"
                 }`}
               >
                 <p className="font-bold text-lg">{dayPlan.day}</p>
                 <div
-                  className={`flex items-center text-sm mt-1 ${
-                    isSelected ? "text-red-100" : "text-gray-400"
+                  className={`flex items-center text-xs mt-1 ${
+                    isSelected ? "text-background/80" : "text-text-secondary"
                   }`}
                 >
-                  {/* ✅ Added icons next to the workout focus */}
                   {focusIcons[dayPlan.focus] || (
-                    <Dumbbell className="w-5 h-5 mr-2" />
+                    <Dumbbell className="w-4 h-4 mr-1" />
                   )}
                   {dayPlan.focus}
                 </div>
-              </button>
+              </motion.button>
             );
           })}
         </div>
 
-        {/* Daily Workout Video Display */}
         <div>
-          <h2 className="text-3xl lg:text-4xl font-bold text-white mb-8 capitalize">
-            {selectedDay}'s Focus:{" "}
-            <span className="text-red-500">{selectedWorkout.focus}</span>
+          <h2 className="text-2xl lg:text-4xl font-bold text-white mb-6 capitalize px-2">
+            Focus: <span className="text-primary">{selectedWorkout?.focus}</span>
           </h2>
+
           {videoIds.length > 0 ? (
-            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
               {videoIds.map((videoId, index) => (
-                // ✅ Added a fade-in animation to the video cards
-                <div
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1 }}
                   key={videoId}
-                  className="aspect-video bg-gray-800 rounded-xl shadow-2xl overflow-hidden border border-gray-700 transform hover:scale-105 transition-transform duration-300"
-                  style={{
-                    animation: `fadeIn 0.5s ease-in-out ${
-                      index * 0.1
-                    }s forwards`,
-                    opacity: 0,
-                  }}
+                  className="aspect-video bg-surface rounded-2xl shadow-xl overflow-hidden border border-gray-800"
                 >
                   <iframe
                     width="100%"
@@ -109,33 +114,39 @@ const HomeWorkouts = () => {
                     frameBorder="0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
-                    className="rounded-xl"
+                    className="rounded-2xl"
                   ></iframe>
-                </div>
+                </motion.div>
               ))}
             </div>
           ) : (
-            // ✅ Revamped the "Rest Day" card to be more visually appealing
-            <div className="bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700 rounded-xl p-8 text-center h-80 flex flex-col justify-center items-center shadow-lg">
-              <Coffee size={64} className="text-red-500 mb-4" />
-              <p className="text-4xl font-bold text-white">
-                {selectedWorkout.focus}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="bg-surface border border-gray-800 rounded-3xl p-8 text-center h-64 flex flex-col justify-center items-center shadow-lg"
+            >
+              <Coffee size={48} className="text-primary mb-4" />
+              <p className="text-2xl font-bold text-white mb-2">
+                {selectedWorkout?.focus}
               </p>
-              <p className="text-gray-400 mt-2 text-lg">
-                Recovery is key to progress. Enjoy your day off!
+              <p className="text-text-secondary">
+                Recovery is key. Enjoy your day off!
               </p>
-            </div>
+            </motion.div>
           )}
         </div>
       </div>
-      {/* ✅ Added a keyframes animation for the fade-in effect */}
+
       <style>{`
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
+        .hide-scrollbar::-webkit-scrollbar {
+          display: none;
+        }
+        .hide-scrollbar {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
         }
       `}</style>
-    </div>
+    </motion.div>
   );
 };
 
