@@ -14,14 +14,15 @@ const SearchExercises = ({ onSearch, bodyPart, setBodyPart }) => {
   const [allSearchTerms, setAllSearchTerms] = useState([]);
 
   useEffect(() => {
-    const bodyPartNames = allBodyPartsData.map((item) => item.name);
-    const equipmentNames = allEquipmentsData.map((item) => item.name);
-    const exerciseNames = allExercisesData.map((item) => item.name);
+    const bodyPartNames = allBodyPartsData.map((item) => typeof item === 'string' ? item : item.name);
+    const equipmentNames = allEquipmentsData ? allEquipmentsData.map((item) => typeof item === 'string' ? item : item.name) : [];
+    const exerciseNames = allExercisesData.map((item) => typeof item === 'string' ? item : item.name);
+
     const uniqueTerms = [
-      ...new Set([...bodyPartNames, ...equipmentNames, ...exerciseNames]),
+      ...new Set([...bodyPartNames, ...equipmentNames, ...exerciseNames].filter(Boolean)),
     ];
     setAllSearchTerms(uniqueTerms);
-    setBodyParts(["all", ...bodyPartNames]);
+    setBodyParts(["all", ...bodyPartNames.filter(Boolean)]);
   }, []);
 
   const handleInputChange = (e) => {
@@ -29,7 +30,7 @@ const SearchExercises = ({ onSearch, bodyPart, setBodyPart }) => {
     setSearch(value);
     if (value.length > 1) {
       const filteredSuggestions = allSearchTerms
-        .filter((term) => term.toLowerCase().includes(value.toLowerCase()))
+        .filter((term) => term && term.toLowerCase().includes(value.toLowerCase()))
         .slice(0, 5);
       setSuggestions(filteredSuggestions);
     } else {
@@ -48,7 +49,7 @@ const SearchExercises = ({ onSearch, bodyPart, setBodyPart }) => {
 
   const handleLocalSearch = () => {
     const isValidSearch = allSearchTerms
-      .map((term) => term.toLowerCase())
+      .map((term) => term && term.toLowerCase())
       .includes(search.toLowerCase());
 
     if (search && isValidSearch) {

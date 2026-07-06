@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Play, FileText } from "lucide-react";
+import { FileText } from "lucide-react";
 
 import BodyPartImage from "../assets/icons/body-part.png";
 import TargetImage from "../assets/icons/target.png";

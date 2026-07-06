@@ -4,6 +4,7 @@ import { Search, X, History } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import allBodyPartsData from "../data/bodyparts.json";
 import allExercisesData from "../data/exercises.json";
+// Fallback if equipments.json doesn't exist, though it seems it did exist in the file system list
 import allEquipmentsData from "../data/equipments.json";
 
 const MobileSearchOverlay = ({ isOpen, onClose }) => {
@@ -15,11 +16,13 @@ const MobileSearchOverlay = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const bodyPartNames = allBodyPartsData.map((item) => item.name);
-    const equipmentNames = allEquipmentsData.map((item) => item.name);
-    const exerciseNames = allExercisesData.map((item) => item.name);
+    // Safely extract names depending on if it's an array of strings or objects with a 'name' property
+    const bodyPartNames = allBodyPartsData.map((item) => typeof item === 'string' ? item : item.name);
+    const equipmentNames = allEquipmentsData ? allEquipmentsData.map((item) => typeof item === 'string' ? item : item.name) : [];
+    const exerciseNames = allExercisesData.map((item) => typeof item === 'string' ? item : item.name);
+
     const uniqueTerms = [
-      ...new Set([...bodyPartNames, ...equipmentNames, ...exerciseNames]),
+      ...new Set([...bodyPartNames, ...equipmentNames, ...exerciseNames].filter(Boolean)),
     ];
     setAllSearchTerms(uniqueTerms);
 
@@ -44,7 +47,7 @@ const MobileSearchOverlay = ({ isOpen, onClose }) => {
 
     if (value.length > 1) {
       const filtered = allSearchTerms
-        .filter((term) => term.toLowerCase().includes(value.toLowerCase()))
+        .filter((term) => term && term.toLowerCase().includes(value.toLowerCase()))
         .slice(0, 8);
       setSuggestions(filtered);
     } else {
@@ -68,7 +71,7 @@ const MobileSearchOverlay = ({ isOpen, onClose }) => {
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && searchTerm) {
       const isValidSearch = allSearchTerms
-        .map((term) => term.toLowerCase())
+        .map((term) => term && term.toLowerCase())
         .includes(searchTerm.toLowerCase());
 
       if (isValidSearch) {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import Fuse from "fuse.js";
 import { useLocation } from "react-router-dom";
@@ -34,22 +34,21 @@ const Home = () => {
   const [bodyPart, setBodyPart] = useState("all");
   const location = useLocation();
 
-  const fuse = new Fuse(allExercisesData, {
-    keys: ["name", "targetMuscles", "equipments", "bodyParts"],
-    threshold: 0.4,
-  });
-
-  const handleSearch = (searchTerm) => {
+  const handleSearch = useCallback((searchTerm) => {
     if (searchTerm === "") {
       setExercises(allExercisesData);
       setBodyPart("all");
       return;
     }
+    const fuse = new Fuse(allExercisesData, {
+      keys: ["name", "targetMuscles", "equipments", "bodyParts"],
+      threshold: 0.4,
+    });
     const results = fuse.search(searchTerm);
     const searchedExercises = results.map((result) => result.item);
     setExercises(searchedExercises);
     setBodyPart(`${searchTerm}`);
-  };
+  }, []);
 
   const handleBodyPartChange = (part) => {
     setBodyPart(part);
@@ -78,7 +77,7 @@ const Home = () => {
         document.getElementById("exercises")?.scrollIntoView({ behavior: "smooth" });
       }, 100);
     }
-  }, [location.state]);
+  }, [location.state, handleSearch]);
 
   return (
     <motion.div

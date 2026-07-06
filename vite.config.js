@@ -10,7 +10,7 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: "autoUpdate",
-      includeAssets: ["favicon.ico", "apple-touch-icon.png", "mask-icon.svg"],
+      includeAssets: ["gym-icon.png", "gymx.png"],
       manifest: {
         name: "GymX Fitness",
         short_name: "GymX",
