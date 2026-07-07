@@ -1,11 +1,24 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { useLocation } from "react-router-dom";
 import Fuse from "fuse.js";
 
 import allExercisesData from "../data/exercises.json"; // Local data import
 import HeroBanner from "../components/HeroBanner.jsx";
 import SearchExercises from "../components/SearchExercises.jsx";
 import Exercises from "../components/Exercises.jsx";
+
+const pageVariants = {
+  initial: { opacity: 0, x: -20 },
+  in: { opacity: 1, x: 0 },
+  out: { opacity: 0, x: 20 }
+};
+
+const pageTransition = {
+  type: "tween",
+  ease: "anticipate",
+  duration: 0.5
+};
 
 const sectionVariants = {
   hidden: { opacity: 0, y: 50 },
@@ -20,6 +33,7 @@ const Home = () => {
   // ✅ State ab local data se initialize ho raha hai
   const [exercises, setExercises] = useState(allExercisesData);
   const [bodyPart, setBodyPart] = useState("all");
+  const location = useLocation();
 
   // Fuse.js setup for smart search
   const fuse = new Fuse(allExercisesData, {
@@ -54,8 +68,35 @@ const Home = () => {
     }
   };
 
+  useEffect(() => {
+    // Check for search term in location state (from MobileSearchOverlay)
+    if (location.state?.executeSearch) {
+      handleSearch(location.state.executeSearch);
+
+      // Clear the state so it doesn't trigger again on reload
+      window.history.replaceState({}, document.title)
+    }
+
+    // Listen for custom event
+    const handleCustomSearch = (e) => {
+      if (e.detail) {
+        handleSearch(e.detail);
+      }
+    };
+
+    window.addEventListener('execute-search', handleCustomSearch);
+    return () => window.removeEventListener('execute-search', handleCustomSearch);
+  }, [location.state]);
+
   return (
-    <div>
+    <motion.div
+      initial="initial"
+      animate="in"
+      exit="out"
+      variants={pageVariants}
+      transition={pageTransition}
+      className="w-full"
+    >
       <HeroBanner />
 
       <motion.div
@@ -84,7 +125,7 @@ const Home = () => {
           bodyPart={bodyPart}
         />
       </motion.div>
-    </div>
+    </motion.div>
   );
 };
 
