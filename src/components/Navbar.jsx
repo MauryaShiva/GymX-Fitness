@@ -4,7 +4,7 @@ import Logo from "../assets/images/Logo.png";
 
 const Navbar = () => {
   return (
-    <nav className="fixed top-0 z-50 w-full bg-white px-4 sm:px-8 md:px-12 py-3 sm:py-4 shadow-lg border-b border-gray-100">
+    <nav className="fixed top-0 z-50 w-full bg-white/80 backdrop-blur-md px-4 sm:px-8 md:px-12 py-3 sm:py-4 shadow-sm border-b border-gray-100 pt-safe-top">
       <div className="flex items-center justify-between max-w-7xl mx-auto">
         {/* Logo */}
         <NavLink to="/" className="flex items-center">
@@ -13,10 +13,11 @@ const Navbar = () => {
             alt="GymX Logo"
             className="w-10 h-10 sm:w-12 sm:h-12"
           />
+          <span className="ml-2 font-bold text-xl tracking-tight text-gray-900 md:hidden">GymX</span>
         </NavLink>
 
-        {/* Navigation Links */}
-        <div className="flex items-center gap-8 text-base font-medium">
+        {/* Navigation Links - Hidden on Mobile */}
+        <div className="hidden md:flex items-center gap-8 text-base font-medium">
           <NavLink
             to="/"
             className={({ isActive }) =>
