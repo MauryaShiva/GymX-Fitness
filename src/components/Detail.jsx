@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-// ✅ Import 'motion' and 'AnimatePresence' for animations
 import { motion, AnimatePresence } from "framer-motion";
 
 import BodyPartImage from "../assets/icons/body-part.png";
@@ -7,7 +6,6 @@ import TargetImage from "../assets/icons/target.png";
 import EquipmentImage from "../assets/icons/equipment.png";
 
 const Detail = ({ exerciseDetail }) => {
-  // ✅ Add state to manage showing/hiding the instructions
   const [showInstructions, setShowInstructions] = useState(false);
 
   const { bodyParts, gifUrl, name, targetMuscles, equipments, instructions } =
@@ -23,7 +21,6 @@ const Detail = ({ exerciseDetail }) => {
     { icon: EquipmentImage, name: equipments[0], alt: "equipment icon" },
   ];
 
-  // Animation variants for a staggered fade-in effect
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -38,72 +35,75 @@ const Detail = ({ exerciseDetail }) => {
   };
 
   return (
-    // ✅ Wrap the main container in a motion.div for entry animation
     <motion.div
-      className="flex flex-col lg:flex-row p-5 items-center gap-10"
+      className="flex flex-col lg:flex-row p-4 md:p-8 items-start md:items-center gap-8 md:gap-12"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
     >
-      <motion.img
-        variants={itemVariants}
-        src={gifUrl}
-        alt={name}
-        loading="lazy"
-        className="w-full max-w-md lg:max-w-lg shadow-lg rounded-lg"
-      />
+      <motion.div variants={itemVariants} className="w-full lg:w-1/2 flex justify-center bg-white rounded-[40px] shadow-2xl p-4 md:p-8">
+        <img
+          src={gifUrl}
+          alt={name}
+          loading="lazy"
+          className="w-full object-cover aspect-square md:aspect-auto rounded-3xl"
+        />
+      </motion.div>
 
-      {/* ✅ Animate the text content as well */}
       <motion.div
         variants={itemVariants}
-        className="flex flex-col gap-5 lg:gap-6 w-full"
+        className="flex flex-col gap-6 lg:gap-8 w-full lg:w-1/2"
       >
-        <h1 className="text-3xl lg:text-5xl font-bold capitalize text-gray-800">
+        <h1 className="text-4xl md:text-5xl lg:text-6xl font-black capitalize text-white tracking-tight">
           {name}
         </h1>
-        <p className="text-base lg:text-lg text-gray-600">
+        <p className="text-lg text-gray-400 leading-relaxed">
           Exercises keep you strong.{" "}
-          <span className="capitalize font-semibold">{name}</span> is one of the
+          <span className="capitalize font-semibold text-gray-200">{name}</span> is one of the
           best exercises to target your{" "}
-          <span className="font-semibold">{targetMuscles[0]}</span>. It will
+          <span className="font-semibold text-gray-200">{targetMuscles[0]}</span>. It will
           help you improve your mood and gain energy.
         </p>
 
-        {extraDetail.map((item) => (
-          <div key={item.name} className="flex flex-row items-center gap-6">
-            <div className="bg-[#FFF2DB] rounded-full w-20 h-20 flex items-center justify-center flex-shrink-0">
-              <img src={item.icon} alt={item.alt} className="w-11 h-11" />
+        <div className="flex flex-col gap-6">
+          {extraDetail.map((item) => (
+            <div key={item.name} className="flex flex-row items-center gap-6">
+              <div className="bg-gray-800 rounded-full w-16 h-16 md:w-20 md:h-20 flex items-center justify-center flex-shrink-0 shadow-lg border border-gray-700">
+                <img src={item.icon} alt={item.alt} className="w-8 h-8 md:w-10 md:h-10 brightness-200" />
+              </div>
+              <span className="capitalize text-xl md:text-2xl font-semibold text-gray-200">
+                {item.name}
+              </span>
             </div>
-            <span className="capitalize text-lg lg:text-2xl text-gray-700">
-              {item.name}
-            </span>
-          </div>
-        ))}
+          ))}
+        </div>
 
-        {/* ✅ Interactive Instructions Section */}
-        <div className="mt-4">
+        {/* Action Buttons wrapped in sticky container for mobile */}
+        <div className="fixed bottom-[64px] left-0 md:static w-full bg-black/90 md:bg-transparent p-4 md:p-0 border-t border-gray-800 md:border-none z-40 pb-safe md:pb-0 mt-8">
           <button
             onClick={() => setShowInstructions(!showInstructions)}
-            className="bg-red-500 text-white font-bold py-2 px-6 rounded-md hover:bg-red-600 transition duration-300"
+            className="w-full md:w-auto bg-red-600 text-white font-bold py-4 md:py-3 px-8 rounded-full md:rounded-xl hover:bg-red-700 transition duration-300 shadow-lg shadow-red-600/30 text-lg md:text-base active:scale-95"
           >
             {showInstructions ? "Hide Instructions" : "Show Instructions"}
           </button>
-
-          <AnimatePresence>
-            {showInstructions && (
-              <motion.ol
-                className="list-decimal list-inside mt-4 space-y-2 text-gray-600"
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                exit={{ opacity: 0, height: 0 }}
-              >
-                {instructions.map((step, index) => (
-                  <li key={index}>{step}</li>
-                ))}
-              </motion.ol>
-            )}
-          </AnimatePresence>
         </div>
+
+        <AnimatePresence>
+          {showInstructions && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              className="overflow-hidden"
+            >
+              <ol className="list-decimal list-inside mt-6 space-y-4 text-gray-300 bg-gray-900 p-6 rounded-2xl border border-gray-800">
+                {instructions.map((step, index) => (
+                  <li key={index} className="leading-relaxed pl-2">{step}</li>
+                ))}
+              </ol>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </motion.div>
     </motion.div>
   );
