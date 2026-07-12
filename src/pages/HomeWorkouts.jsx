@@ -1,7 +1,5 @@
 import React, { useState } from "react";
-// Assuming you have a data file for the weekly plan
 import { weeklyPlan } from "../data/weeklyPlan";
-// Using lucide-react for clean, modern icons. Make sure to install it: npm install lucide-react
 import {
   Dumbbell,
   HeartPulse,
@@ -11,8 +9,8 @@ import {
   Repeat,
   CalendarCheck,
 } from "lucide-react";
+import { motion } from "framer-motion";
 
-// An object to map workout focus to a specific icon for visual flair
 const focusIcons = {
   "Full Body": <Dumbbell className="w-5 h-5 mr-2" />,
   "Upper Body": <HeartPulse className="w-5 h-5 mr-2" />,
@@ -21,6 +19,12 @@ const focusIcons = {
   Core: <Repeat className="w-5 h-5 mr-2" />,
   "Active Recovery": <CalendarCheck className="w-5 h-5 mr-2" />,
   "Rest Day": <Coffee className="w-5 h-5 mr-2" />,
+};
+
+const pageVariants = {
+  initial: { opacity: 0, x: 20 },
+  animate: { opacity: 1, x: 0 },
+  exit: { opacity: 0, x: -20 }
 };
 
 const HomeWorkouts = () => {
@@ -33,11 +37,16 @@ const HomeWorkouts = () => {
   const videoIds = selectedWorkout?.videos || [];
 
   return (
-    // ✅ Added a subtle background gradient for more visual depth
-    <div className="pt-24 min-h-screen px-6 lg:px-12 pb-12 bg-gradient-to-b from-gray-900 to-black text-white">
+    <motion.div
+      className="pt-8 md:pt-24 min-h-screen px-4 sm:px-6 lg:px-12 pb-32 md:pb-12 bg-gradient-to-b from-gray-900 to-black text-white"
+      variants={pageVariants}
+      initial="initial"
+      animate="animate"
+      exit="exit"
+      transition={{ duration: 0.3 }}
+    >
       <div className="max-w-7xl mx-auto">
-        {/* ✅ Centered the header text for a more impactful title section */}
-        <div className="text-center mb-12">
+        <div className="text-center mb-12 mt-4 md:mt-0">
           <h1 className="text-4xl lg:text-6xl font-extrabold text-white mb-4 tracking-tight">
             Weekly Home Plan
           </h1>
@@ -47,7 +56,6 @@ const HomeWorkouts = () => {
           </p>
         </div>
 
-        {/* Day Selector - Enhanced with gradients, shadows, and hover effects */}
         <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-4 mb-16">
           {Object.values(weeklyPlan).map((dayPlan) => {
             const isSelected = selectedDay === dayPlan.day.toLowerCase();
@@ -55,9 +63,6 @@ const HomeWorkouts = () => {
               <button
                 key={dayPlan.day}
                 onClick={() => setSelectedDay(dayPlan.day.toLowerCase())}
-                // ✅ Enhanced styling for buttons:
-                // - Added a subtle border and shadow for a "card" feel.
-                // - Improved hover and selected states for better interactivity.
                 className={`p-4 rounded-xl text-left transition-all duration-300 transform hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-black ${
                   isSelected
                     ? "bg-red-600 text-white shadow-lg scale-105 ring-2 ring-red-500"
@@ -70,7 +75,6 @@ const HomeWorkouts = () => {
                     isSelected ? "text-red-100" : "text-gray-400"
                   }`}
                 >
-                  {/* ✅ Added icons next to the workout focus */}
                   {focusIcons[dayPlan.focus] || (
                     <Dumbbell className="w-5 h-5 mr-2" />
                   )}
@@ -81,7 +85,6 @@ const HomeWorkouts = () => {
           })}
         </div>
 
-        {/* Daily Workout Video Display */}
         <div>
           <h2 className="text-3xl lg:text-4xl font-bold text-white mb-8 capitalize">
             {selectedDay}'s Focus:{" "}
@@ -90,7 +93,6 @@ const HomeWorkouts = () => {
           {videoIds.length > 0 ? (
             <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
               {videoIds.map((videoId, index) => (
-                // ✅ Added a fade-in animation to the video cards
                 <div
                   key={videoId}
                   className="aspect-video bg-gray-800 rounded-xl shadow-2xl overflow-hidden border border-gray-700 transform hover:scale-105 transition-transform duration-300"
@@ -115,7 +117,6 @@ const HomeWorkouts = () => {
               ))}
             </div>
           ) : (
-            // ✅ Revamped the "Rest Day" card to be more visually appealing
             <div className="bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700 rounded-xl p-8 text-center h-80 flex flex-col justify-center items-center shadow-lg">
               <Coffee size={64} className="text-red-500 mb-4" />
               <p className="text-4xl font-bold text-white">
@@ -128,14 +129,13 @@ const HomeWorkouts = () => {
           )}
         </div>
       </div>
-      {/* ✅ Added a keyframes animation for the fade-in effect */}
       <style>{`
         @keyframes fadeIn {
           from { opacity: 0; transform: translateY(20px); }
           to { opacity: 1; transform: translateY(0); }
         }
       `}</style>
-    </div>
+    </motion.div>
   );
 };
 

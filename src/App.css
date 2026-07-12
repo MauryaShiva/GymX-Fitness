@@ -1,1 +1,18 @@
 @import "tailwindcss";
+
+@utility pb-safe {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+@utility pt-safe-top {
+  padding-top: env(safe-area-inset-top);
+}
+
+@utility mt-safe-top {
+  margin-top: env(safe-area-inset-top);
+}
+
+html, body {
+  background-color: #121212;
+  color: #ffffff;
+}

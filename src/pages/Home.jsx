@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import Fuse from "fuse.js";
 
-import allExercisesData from "../data/exercises.json"; // Local data import
+import allExercisesData from "../data/exercises.json";
 import HeroBanner from "../components/HeroBanner.jsx";
 import SearchExercises from "../components/SearchExercises.jsx";
 import Exercises from "../components/Exercises.jsx";
@@ -16,18 +16,21 @@ const sectionVariants = {
   },
 };
 
+const pageVariants = {
+  initial: { opacity: 0, x: 20 },
+  animate: { opacity: 1, x: 0 },
+  exit: { opacity: 0, x: -20 }
+};
+
 const Home = () => {
-  // ✅ State ab local data se initialize ho raha hai
   const [exercises, setExercises] = useState(allExercisesData);
   const [bodyPart, setBodyPart] = useState("all");
 
-  // Fuse.js setup for smart search
   const fuse = new Fuse(allExercisesData, {
     keys: ["name", "targetMuscles", "equipments", "bodyParts"],
     threshold: 0.4,
   });
 
-  // ✅ Filtering aur searching ka saara logic ab yahan hai
   const handleSearch = (searchTerm) => {
     if (searchTerm === "") {
       setExercises(allExercisesData);
@@ -55,7 +58,13 @@ const Home = () => {
   };
 
   return (
-    <div>
+    <motion.main
+      variants={pageVariants}
+      initial="initial"
+      animate="animate"
+      exit="exit"
+      transition={{ duration: 0.3 }}
+    >
       <HeroBanner />
 
       <motion.div
@@ -65,7 +74,6 @@ const Home = () => {
         viewport={{ once: true, amount: 0.2 }}
       >
         <SearchExercises
-          // ✅ Naye functions ko as a prop pass karein
           onSearch={handleSearch}
           bodyPart={bodyPart}
           setBodyPart={handleBodyPartChange}
@@ -79,12 +87,11 @@ const Home = () => {
         viewport={{ once: true, amount: 0.2 }}
       >
         <Exercises
-          // ✅ Sirf zaroori props pass karein
           exercises={exercises}
           bodyPart={bodyPart}
         />
       </motion.div>
-    </div>
+    </motion.main>
   );
 };
 
