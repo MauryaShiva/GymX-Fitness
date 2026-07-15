@@ -40,6 +40,19 @@ const Home = () => {
     setBodyPart(`${searchTerm}`);
   };
 
+  // Automatically open search if query param is present (e.g. from nav link on other page)
+  React.useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("search") === "true") {
+       // Clean up URL and open search
+       window.history.replaceState({}, '', '/');
+       // Small delay to ensure component is fully mounted and listeners attached
+       setTimeout(() => {
+          window.dispatchEvent(new Event("open-search"));
+       }, 100);
+    }
+  }, []);
+
   const handleBodyPartChange = (part) => {
     setBodyPart(part);
     if (part === "all") {

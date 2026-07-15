@@ -72,47 +72,36 @@ const ExerciseDetails = () => {
   // --- Logic mein koi badlav nahi ---
 
   return (
-    // ✅ New UI: A clean, high-contrast light theme for better readability.
+    // ✅ Updated UI: Premium Dark Theme
     <motion.main
-      className="bg-gray-50 text-gray-900 min-h-screen px-4 sm:px-6 lg:px-8"
+      className="bg-background text-text-primary min-h-screen-safe w-full md:px-6 lg:px-8"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.5, ease: "easeInOut" }}
     >
-      <div className="max-w-7xl mx-auto py-12 md:py-20">
-        {/*
-          NOTE: For the best look, the <Detail /> component should be updated
-          to use this new light theme with teal accents.
-        */}
+      <div className="max-w-7xl mx-auto pb-12 md:py-20">
         <section className="mb-20">
           <Detail exerciseDetail={exerciseDetail} />
         </section>
 
-        {/* ✅ Stylized Divider: Updated for the light theme. */}
-        <div className="w-full flex justify-center my-20">
-          <div className="w-1/3 h-px bg-gray-200"></div>
+        {/* ✅ Stylized Divider: Updated for the dark theme. */}
+        <div className="w-full flex justify-center my-12 md:my-20">
+          <div className="w-1/3 h-px bg-gray-800"></div>
         </div>
 
-        {/*
-          NOTE: The <ExerciseVideos /> component should be updated to match,
-          with headings and links using the new teal accent color (e.g., text-teal-500).
-        */}
-        <section className="mb-20">
+        <section className="mb-20 px-4 md:px-0">
           <ExerciseVideos
             exerciseVideos={exerciseVideos}
             name={exerciseDetail.name}
           />
         </section>
 
-        <div className="w-full flex justify-center my-20">
-          <div className="w-1/3 h-px bg-gray-200"></div>
+        <div className="w-full flex justify-center my-12 md:my-20">
+          <div className="w-1/3 h-px bg-gray-800"></div>
         </div>
 
-        {/*
-          NOTE: The <SimilarExercises /> component and its cards should be
-          redesigned for a light background to complete the look.
-        */}
-        <section>
+        <section className="px-4 md:px-0">
           <SimilarExercises
             targetMuscleExercises={targetMuscleExercises}
             equipmentExercises={equipmentExercises}
