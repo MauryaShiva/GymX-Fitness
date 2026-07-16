@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import Fuse from "fuse.js";
 
@@ -20,6 +21,18 @@ const Home = () => {
   // ✅ State ab local data se initialize ho raha hai
   const [exercises, setExercises] = useState(allExercisesData);
   const [bodyPart, setBodyPart] = useState("all");
+  const location = useLocation();
+
+  useEffect(() => {
+    // If navigated to /?search=true, dispatch the event
+    const queryParams = new URLSearchParams(location.search);
+    if (queryParams.get("search") === "true") {
+      const event = new CustomEvent("open-search");
+      window.dispatchEvent(event);
+      // Clean up URL without triggering navigation
+      window.history.replaceState({}, "", "/");
+    }
+  }, [location]);
 
   // Fuse.js setup for smart search
   const fuse = new Fuse(allExercisesData, {
@@ -55,7 +68,12 @@ const Home = () => {
   };
 
   return (
-    <div>
+    <motion.div
+      initial={{ opacity: 0, x: -20 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -20 }}
+      transition={{ duration: 0.3, ease: "easeInOut" }}
+    >
       <HeroBanner />
 
       <motion.div
@@ -84,7 +102,7 @@ const Home = () => {
           bodyPart={bodyPart}
         />
       </motion.div>
-    </div>
+    </motion.div>
   );
 };
 
