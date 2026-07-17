@@ -41,7 +41,7 @@ const ExerciseVideos = ({ exerciseVideos, name }) => {
   if (!exerciseVideos || exerciseVideos.length === 0) {
     return (
       <div className="mt-12 lg:mt-24 px-5 text-center">
-        <h2 className="text-2xl sm:text-3xl font-bold text-text-secondary">
+        <h2 className="text-2xl sm:text-3xl font-bold text-gray-400">
           Loading videos...
         </h2>
       </div>
@@ -61,48 +61,59 @@ const ExerciseVideos = ({ exerciseVideos, name }) => {
       </AnimatePresence>
 
       <motion.section
-        className="mt-12 lg:mt-24 px-5"
-        initial={{ opacity: 0, y: 50 }}
+        className="w-full mt-10"
+        initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.2 }}
-        transition={{ duration: 0.6 }}
+        viewport={{ once: true, amount: 0.1 }}
+        transition={{ duration: 0.5 }}
       >
-        <h2 className="text-3xl lg:text-4xl font-bold text-center mb-12 text-text-primary">
-          Watch <span className="text-primary capitalize">{name}</span> Exercise
-          Videos
+        <h2 className="text-3xl lg:text-4xl font-extrabold text-left mb-8 md:mb-12 text-white tracking-tight leading-tight">
+          Watch <span className="text-primary capitalize">{name}</span> tutorials
         </h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10 justify-items-center">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 w-full max-w-7xl mx-auto">
           {exerciseVideos.slice(0, 3).map((item, index) => (
-            // ✅ 4. Changed the <a> tag to a <button> to trigger the modal
-            <button
+            <motion.button
               key={index}
               onClick={() => setSelectedVideoId(item.video.videoId)}
-              className="group block w-full max-w-sm bg-surface rounded-lg shadow-lg overflow-hidden transition-transform duration-300 hover:scale-105 hover:shadow-primary/20 text-left"
+              className="group flex flex-col w-full bg-surface rounded-2xl overflow-hidden shadow-lg border border-gray-800 text-left"
+              whileHover={{ y: -5, scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.1, duration: 0.4 }}
             >
-              <div className="relative">
+              {/* Video Thumbnail wrapper for 16:9 aspect ratio */}
+              <div className="relative w-full pt-[56.25%] overflow-hidden bg-surface-hover">
                 <img
                   src={item.video.thumbnails[0].url}
                   alt={item.video.title}
                   loading="lazy"
-                  className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-110"
+                  className="absolute top-0 left-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <PlayCircleOutline sx={{ fontSize: 60, color: "white" }} />
+                <div className="absolute inset-0 bg-black/20 group-hover:bg-black/50 transition-colors duration-300 flex items-center justify-center">
+                  <div className="w-16 h-16 rounded-full bg-primary/90 flex items-center justify-center backdrop-blur-sm shadow-xl transform scale-90 group-hover:scale-110 transition-transform duration-300">
+                    <PlayCircleOutline sx={{ fontSize: 32, color: "white" }} />
+                  </div>
                 </div>
               </div>
-              <div className="p-4">
+
+              <div className="p-5 flex flex-col justify-between flex-grow">
                 <h3
-                  className="text-base font-bold text-text-primary truncate"
+                  className="text-lg font-bold text-gray-100 line-clamp-2 leading-snug group-hover:text-primary transition-colors"
                   title={item.video.title}
                 >
                   {item.video.title}
                 </h3>
-                <p className="text-sm text-text-secondary mt-1">
+                <p className="text-sm text-gray-400 mt-3 font-medium flex items-center gap-2">
+                  <span className="w-6 h-6 rounded-full bg-surface-hover flex items-center justify-center text-xs font-bold text-gray-300">
+                    {item.video.channelName.charAt(0)}
+                  </span>
                   {item.video.channelName}
                 </p>
               </div>
-            </button>
+            </motion.button>
           ))}
         </div>
       </motion.section>
