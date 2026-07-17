@@ -4,13 +4,13 @@ import Loader from "./Loader.jsx";
 import ExerciseCard from "./ExerciseCard.jsx";
 
 const HorizontalScrollWrapper = ({ data }) => (
-  <div className="flex overflow-x-auto gap-4 md:gap-8 pb-4 px-2">
+  <div className="flex overflow-x-auto gap-4 md:gap-6 pb-4 md:pb-6 snap-x snap-mandatory scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0">
     {data.slice(0, 10).map((exercise) => (
       <div
         key={exercise.exerciseId}
-        className="min-w-[300px] sm:min-w-[320px] flex-shrink-0"
+        className="min-w-[280px] sm:min-w-[320px] flex-shrink-0 snap-center"
       >
-        <ExerciseCard exercise={exercise} size="small" />
+        <ExerciseCard exercise={exercise} />
       </div>
     ))}
   </div>
@@ -19,38 +19,38 @@ const HorizontalScrollWrapper = ({ data }) => (
 const SimilarExercises = ({ targetMuscleExercises, equipmentExercises }) => {
   return (
     <motion.section
-      className="mt-12 lg:mt-24 px-5"
-      initial={{ opacity: 0, y: 50 }}
+      className="w-full mt-10"
+      initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.2 }}
-      transition={{ duration: 0.6 }}
+      viewport={{ once: true, amount: 0.1 }}
+      transition={{ duration: 0.5 }}
     >
-      <h2 className="text-2xl sm:text-3xl font-bold text-center mb-8 text-gray-800">
-        Exercises that target the same{" "}
-        <span className="text-red-500 capitalize">muscle group</span>
-      </h2>
+      <div className="mb-12 md:mb-16">
+        <h2 className="text-2xl md:text-3xl font-extrabold mb-6 md:mb-8 text-white tracking-tight">
+          Target the same <span className="text-primary capitalize">muscle group</span>
+        </h2>
 
-      {/* ✅ Added a div with margin-top to create space */}
-      <div className="mt-8">
-        {targetMuscleExercises.length ? (
-          <HorizontalScrollWrapper data={targetMuscleExercises} />
-        ) : (
-          <Loader />
-        )}
+        <div className="relative w-full overflow-hidden">
+          {targetMuscleExercises.length ? (
+            <HorizontalScrollWrapper data={targetMuscleExercises} />
+          ) : (
+            <Loader />
+          )}
+        </div>
       </div>
 
-      <h2 className="text-2xl sm:text-3xl font-bold text-center mt-16 mb-8 text-gray-800">
-        Exercises that use the same{" "}
-        <span className="text-red-500 capitalize">equipment</span>
-      </h2>
+      <div className="mb-8">
+        <h2 className="text-2xl md:text-3xl font-extrabold mb-6 md:mb-8 text-white tracking-tight">
+          Use the same <span className="text-primary capitalize">equipment</span>
+        </h2>
 
-      {/* ✅ Added a div with margin-top to create space */}
-      <div className="mt-8">
-        {equipmentExercises.length ? (
-          <HorizontalScrollWrapper data={equipmentExercises} />
-        ) : (
-          <Loader />
-        )}
+        <div className="relative w-full overflow-hidden">
+          {equipmentExercises.length ? (
+            <HorizontalScrollWrapper data={equipmentExercises} />
+          ) : (
+            <Loader />
+          )}
+        </div>
       </div>
     </motion.section>
   );

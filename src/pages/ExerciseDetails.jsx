@@ -71,48 +71,47 @@ const ExerciseDetails = () => {
   }
   // --- Logic mein koi badlav nahi ---
 
-  return (
-    // ✅ New UI: A clean, high-contrast light theme for better readability.
-    <motion.main
-      className="bg-gray-50 text-gray-900 min-h-screen px-4 sm:px-6 lg:px-8"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, ease: "easeInOut" }}
-    >
-      <div className="max-w-7xl mx-auto py-12 md:py-20">
-        {/*
-          NOTE: For the best look, the <Detail /> component should be updated
-          to use this new light theme with teal accents.
-        */}
-        <section className="mb-20">
-          <Detail exerciseDetail={exerciseDetail} />
-        </section>
+  const pageVariants = {
+    initial: { opacity: 0, y: 20 },
+    in: { opacity: 1, y: 0 },
+    out: { opacity: 0, y: -20 }
+  };
 
-        {/* ✅ Stylized Divider: Updated for the light theme. */}
-        <div className="w-full flex justify-center my-20">
-          <div className="w-1/3 h-px bg-gray-200"></div>
+  return (
+    // ✅ Apply the new dark premium theme and restructure for mobile readability.
+    <motion.main
+      className="bg-background text-white min-h-screen w-full pb-8 md:pb-12"
+      initial="initial"
+      animate="in"
+      exit="out"
+      variants={pageVariants}
+      transition={{ type: "tween", ease: "anticipate", duration: 0.4 }}
+    >
+      {/* Detail component handles its own full-bleed layout on mobile */}
+      <section className="w-full mb-12 md:mb-20">
+        <Detail exerciseDetail={exerciseDetail} />
+      </section>
+
+      {/* Constraints applied below the hero section */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        {/* ✅ Stylized Divider */}
+        <div className="w-full flex justify-center mb-12 md:mb-20">
+          <div className="w-1/3 h-px bg-gray-800"></div>
         </div>
 
-        {/*
-          NOTE: The <ExerciseVideos /> component should be updated to match,
-          with headings and links using the new teal accent color (e.g., text-teal-500).
-        */}
-        <section className="mb-20">
+        <section className="mb-12 md:mb-20">
           <ExerciseVideos
             exerciseVideos={exerciseVideos}
             name={exerciseDetail.name}
           />
         </section>
 
-        <div className="w-full flex justify-center my-20">
-          <div className="w-1/3 h-px bg-gray-200"></div>
+        <div className="w-full flex justify-center mb-12 md:mb-20">
+          <div className="w-1/3 h-px bg-gray-800"></div>
         </div>
 
-        {/*
-          NOTE: The <SimilarExercises /> component and its cards should be
-          redesigned for a light background to complete the look.
-        */}
-        <section>
+        <section className="mb-4">
           <SimilarExercises
             targetMuscleExercises={targetMuscleExercises}
             equipmentExercises={equipmentExercises}
