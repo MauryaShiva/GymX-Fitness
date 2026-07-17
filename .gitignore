@@ -114,3 +114,5 @@ apps/vault/wallets/
 apps/vault/types
 apps/vault/vault-service
 apps/vault/nats
+# Local Netlify folder
+.netlify
