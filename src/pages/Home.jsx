@@ -1,11 +1,24 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import Fuse from "fuse.js";
 
-import allExercisesData from "../data/exercises.json"; // Local data import
+import allExercisesData from "../data/exercises.json";
 import HeroBanner from "../components/HeroBanner.jsx";
 import SearchExercises from "../components/SearchExercises.jsx";
 import Exercises from "../components/Exercises.jsx";
+
+const pageVariants = {
+  initial: { opacity: 0, x: -20 },
+  in: { opacity: 1, x: 0 },
+  out: { opacity: 0, x: 20 }
+};
+
+const pageTransition = {
+  type: "tween",
+  ease: "anticipate",
+  duration: 0.5
+};
 
 const sectionVariants = {
   hidden: { opacity: 0, y: 50 },
@@ -17,9 +30,16 @@ const sectionVariants = {
 };
 
 const Home = () => {
-  // ✅ State ab local data se initialize ho raha hai
+  const location = useLocation();
   const [exercises, setExercises] = useState(allExercisesData);
   const [bodyPart, setBodyPart] = useState("all");
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get('search') === 'true') {
+      window.dispatchEvent(new Event('open-search'));
+    }
+  }, [location.search]);
 
   // Fuse.js setup for smart search
   const fuse = new Fuse(allExercisesData, {
@@ -27,7 +47,6 @@ const Home = () => {
     threshold: 0.4,
   });
 
-  // ✅ Filtering aur searching ka saara logic ab yahan hai
   const handleSearch = (searchTerm) => {
     if (searchTerm === "") {
       setExercises(allExercisesData);
@@ -55,17 +74,22 @@ const Home = () => {
   };
 
   return (
-    <div>
+    <motion.div
+      initial="initial"
+      animate="in"
+      exit="out"
+      variants={pageVariants}
+      transition={pageTransition}
+    >
       <HeroBanner />
 
       <motion.div
         variants={sectionVariants}
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, amount: 0.2 }}
+        viewport={{ once: true, amount: 0.1 }}
       >
         <SearchExercises
-          // ✅ Naye functions ko as a prop pass karein
           onSearch={handleSearch}
           bodyPart={bodyPart}
           setBodyPart={handleBodyPartChange}
@@ -76,15 +100,14 @@ const Home = () => {
         variants={sectionVariants}
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, amount: 0.2 }}
+        viewport={{ once: true, amount: 0.1 }}
       >
         <Exercises
-          // ✅ Sirf zaroori props pass karein
           exercises={exercises}
           bodyPart={bodyPart}
         />
       </motion.div>
-    </div>
+    </motion.div>
   );
 };
 
