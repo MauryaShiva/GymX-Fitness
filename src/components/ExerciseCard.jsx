@@ -1,42 +1,48 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+
+// Use framer-motion's motion.create to wrap react-router's Link
+const MotionLink = motion.create(Link);
 
 const ExerciseCard = ({ exercise }) => {
   return (
-    // ✅ Main container: Dark theme, rounded corners, and a "group" class for hover effects
-    <Link
+    <MotionLink
       to={`/exercise/${exercise.exerciseId}`}
-      className="relative w-[350px] h-[450px] bg-gray-800 rounded-xl overflow-hidden shadow-lg group transition-all duration-300 ease-in-out hover:shadow-2xl hover:shadow-red-500/20 transform hover:-translate-y-2"
+      whileHover={{ y: -5, scale: 1.02 }}
+      whileTap={{ scale: 0.95 }}
+      transition={{ type: "spring", stiffness: 400, damping: 25 }}
+      className="relative w-full sm:w-[350px] h-[400px] sm:h-[450px] bg-white dark:bg-surface rounded-2xl overflow-hidden shadow-md dark:shadow-none border border-gray-100 dark:border-gray-800 group transition-shadow duration-300 hover:shadow-xl dark:hover:shadow-primary/10 block"
     >
-      {/* ✅ Image with a subtle zoom effect on hover */}
-      <img
-        src={exercise.gifUrl}
-        alt={exercise.name}
-        loading="lazy"
-        className="w-full h-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-110"
-      />
+      {/* Container for the GIF to maintain aspect ratio and fit properly */}
+      <div className="w-full h-full relative overflow-hidden bg-white dark:bg-gray-900 flex items-center justify-center p-4">
+        <img
+          src={exercise.gifUrl}
+          alt={exercise.name}
+          loading="lazy"
+          className="w-full h-full object-contain mix-blend-multiply dark:mix-blend-normal dark:opacity-90 transition-transform duration-500 ease-in-out group-hover:scale-105"
+        />
+      </div>
 
-      {/* ✅ Gradient overlay for better text readability and a professional look */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+      {/* Modern gradient overlay focused at the bottom */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent pointer-events-none"></div>
 
-      {/* ✅ Container for all the text content, positioned at the bottom */}
-      <div className="absolute bottom-0 left-0 right-0 p-5 text-white">
-        {/* ✅ Tags with a modern, semi-transparent background */}
-        <div className="flex flex-row gap-2 mb-3">
-          <span className="bg-red-500/80 text-white text-xs font-semibold rounded-full capitalize py-1 px-3 backdrop-blur-sm">
+      {/* Text Content */}
+      <div className="absolute bottom-0 left-0 right-0 p-5 md:p-6 text-white pointer-events-none">
+        <div className="flex flex-wrap gap-2 mb-3">
+          <span className="bg-red-500/90 text-white text-[10px] md:text-xs font-bold tracking-wide rounded-full uppercase py-1 px-3 backdrop-blur-md shadow-sm">
             {exercise.bodyParts[0]}
           </span>
-          <span className="bg-yellow-500/80 text-white text-xs font-semibold rounded-full capitalize py-1 px-3 backdrop-blur-sm">
+          <span className="bg-yellow-500/90 text-white text-[10px] md:text-xs font-bold tracking-wide rounded-full uppercase py-1 px-3 backdrop-blur-md shadow-sm">
             {exercise.targetMuscles[0]}
           </span>
         </div>
 
-        {/* ✅ Exercise name with improved typography */}
-        <h3 className="font-bold capitalize text-2xl tracking-tight">
+        <h3 className="font-bold capitalize text-xl md:text-2xl tracking-tight leading-tight line-clamp-2">
           {exercise.name}
         </h3>
       </div>
-    </Link>
+    </MotionLink>
   );
 };
 
