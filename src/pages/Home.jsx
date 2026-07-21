@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import Fuse from "fuse.js";
 
@@ -16,7 +17,21 @@ const sectionVariants = {
   },
 };
 
+const pageVariants = {
+  initial: { opacity: 0, x: -20 },
+  in: { opacity: 1, x: 0 },
+  out: { opacity: 0, x: 20 }
+};
+
+const pageTransition = {
+  type: "tween",
+  ease: "anticipate",
+  duration: 0.3
+};
+
 const Home = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
   // ✅ State ab local data se initialize ho raha hai
   const [exercises, setExercises] = useState(allExercisesData);
   const [bodyPart, setBodyPart] = useState("all");
@@ -26,6 +41,18 @@ const Home = () => {
     keys: ["name", "targetMuscles", "equipments", "bodyParts"],
     threshold: 0.4,
   });
+
+  useEffect(() => {
+    if (location.search === "?search=true") {
+      const timer = setTimeout(() => {
+        const event = new CustomEvent("open-search");
+        window.dispatchEvent(event);
+        // Clean up URL without triggering a re-render/navigation loop
+        navigate("/", { replace: true, state: { preserveScroll: true } });
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [location, navigate]);
 
   // ✅ Filtering aur searching ka saara logic ab yahan hai
   const handleSearch = (searchTerm) => {
@@ -55,7 +82,13 @@ const Home = () => {
   };
 
   return (
-    <div>
+    <motion.div
+      initial="initial"
+      animate="in"
+      exit="out"
+      variants={pageVariants}
+      transition={pageTransition}
+    >
       <HeroBanner />
 
       <motion.div
@@ -84,7 +117,7 @@ const Home = () => {
           bodyPart={bodyPart}
         />
       </motion.div>
-    </div>
+    </motion.div>
   );
 };
 
