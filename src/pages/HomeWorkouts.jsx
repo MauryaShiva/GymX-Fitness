@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { motion } from "framer-motion";
 // Assuming you have a data file for the weekly plan
 import { weeklyPlan } from "../data/weeklyPlan";
 // Using lucide-react for clean, modern icons. Make sure to install it: npm install lucide-react
@@ -23,6 +24,18 @@ const focusIcons = {
   "Rest Day": <Coffee className="w-5 h-5 mr-2" />,
 };
 
+const pageVariants = {
+  initial: { opacity: 0, x: -20 },
+  in: { opacity: 1, x: 0 },
+  out: { opacity: 0, x: 20 },
+};
+
+const pageTransition = {
+  type: "tween",
+  ease: "anticipate",
+  duration: 0.4,
+};
+
 const HomeWorkouts = () => {
   const currentDay = new Intl.DateTimeFormat("en-US", { weekday: "long" })
     .format(new Date())
@@ -33,8 +46,14 @@ const HomeWorkouts = () => {
   const videoIds = selectedWorkout?.videos || [];
 
   return (
-    // ✅ Added a subtle background gradient for more visual depth
-    <div className="pt-24 min-h-screen px-6 lg:px-12 pb-12 bg-gradient-to-b from-gray-900 to-black text-white">
+    <motion.div
+      initial="initial"
+      animate="in"
+      exit="out"
+      variants={pageVariants}
+      transition={pageTransition}
+      className="pt-24 min-h-screen px-6 lg:px-12 pb-12 bg-gradient-to-b from-gray-900 to-black text-white"
+    >
       <div className="max-w-7xl mx-auto">
         {/* ✅ Centered the header text for a more impactful title section */}
         <div className="text-center mb-12">
@@ -135,7 +154,7 @@ const HomeWorkouts = () => {
           to { opacity: 1; transform: translateY(0); }
         }
       `}</style>
-    </div>
+    </motion.div>
   );
 };
 

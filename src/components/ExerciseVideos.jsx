@@ -61,44 +61,43 @@ const ExerciseVideos = ({ exerciseVideos, name }) => {
       </AnimatePresence>
 
       <motion.section
-        className="mt-12 lg:mt-24 px-5"
+        className="mt-8 lg:mt-12 px-0 md:px-5"
         initial={{ opacity: 0, y: 50 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.2 }}
         transition={{ duration: 0.6 }}
       >
-        <h2 className="text-3xl lg:text-4xl font-bold text-center mb-12 text-text-primary">
-          Watch <span className="text-primary capitalize">{name}</span> Exercise
-          Videos
+        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold mb-8 text-white tracking-tight">
+          Watch <span className="text-primary capitalize">{name}</span> tutorials
         </h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10 justify-items-center">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center">
           {exerciseVideos.slice(0, 3).map((item, index) => (
             // ✅ 4. Changed the <a> tag to a <button> to trigger the modal
             <button
               key={index}
               onClick={() => setSelectedVideoId(item.video.videoId)}
-              className="group block w-full max-w-sm bg-surface rounded-lg shadow-lg overflow-hidden transition-transform duration-300 hover:scale-105 hover:shadow-primary/20 text-left"
+              className="group block w-full bg-surface rounded-2xl shadow-lg border border-gray-800 overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:shadow-primary/20 text-left"
             >
-              <div className="relative">
+              <div className="relative overflow-hidden">
                 <img
                   src={item.video.thumbnails[0].url}
                   alt={item.video.title}
                   loading="lazy"
-                  className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-110"
+                  className="w-full h-48 md:h-56 object-cover transition-transform duration-500 group-hover:scale-110"
                 />
-                <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <PlayCircleOutline sx={{ fontSize: 60, color: "white" }} />
+                <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 backdrop-blur-sm">
+                  <PlayCircleOutline sx={{ fontSize: 64, color: "white" }} />
                 </div>
               </div>
-              <div className="p-4">
+              <div className="p-5">
                 <h3
-                  className="text-base font-bold text-text-primary truncate"
+                  className="text-lg font-bold text-white line-clamp-2 leading-tight mb-2"
                   title={item.video.title}
                 >
                   {item.video.title}
                 </h3>
-                <p className="text-sm text-text-secondary mt-1">
+                <p className="text-sm text-gray-400 font-medium">
                   {item.video.channelName}
                 </p>
               </div>
