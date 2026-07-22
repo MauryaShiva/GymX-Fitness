@@ -38,67 +38,94 @@ const Detail = ({ exerciseDetail }) => {
   };
 
   return (
-    // ✅ Wrap the main container in a motion.div for entry animation
     <motion.div
-      className="flex flex-col lg:flex-row p-5 items-center gap-10"
+      className="flex flex-col md:flex-row md:items-start gap-8 lg:gap-16"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
     >
-      <motion.img
-        variants={itemVariants}
-        src={gifUrl}
-        alt={name}
-        loading="lazy"
-        className="w-full max-w-md lg:max-w-lg shadow-lg rounded-lg"
-      />
+      {/*
+        ✅ Image Container: Mobile-first hero image
+      */}
+      <motion.div variants={itemVariants} className="w-full md:w-1/2 flex justify-center mt-0 md:mt-10">
+        <div className="relative w-full max-w-lg aspect-square rounded-[2rem] overflow-hidden shadow-2xl border border-gray-800 bg-white">
+          <img
+            src={gifUrl}
+            alt={name}
+            loading="lazy"
+            className="w-full h-full object-contain p-4"
+          />
+        </div>
+      </motion.div>
 
-      {/* ✅ Animate the text content as well */}
+      {/* ✅ Text Content: App-style content hierarchy */}
       <motion.div
         variants={itemVariants}
-        className="flex flex-col gap-5 lg:gap-6 w-full"
+        className="w-full md:w-1/2 flex flex-col pt-4 md:pt-10 px-4 md:px-0"
       >
-        <h1 className="text-3xl lg:text-5xl font-bold capitalize text-gray-800">
+        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold capitalize text-white mb-4 tracking-tight drop-shadow-md">
           {name}
         </h1>
-        <p className="text-base lg:text-lg text-gray-600">
+
+        <p className="text-base sm:text-lg text-gray-300 mb-8 leading-relaxed">
           Exercises keep you strong.{" "}
-          <span className="capitalize font-semibold">{name}</span> is one of the
-          best exercises to target your{" "}
-          <span className="font-semibold">{targetMuscles[0]}</span>. It will
-          help you improve your mood and gain energy.
+          <span className="font-bold text-primary capitalize">
+            {name}
+          </span>{" "}
+          is one of the best exercises to target your{" "}
+          <span className="font-bold text-primary capitalize">
+            {targetMuscles?.join(", ")}
+          </span>
+          . It will help you improve your mood and gain energy.
         </p>
 
-        {extraDetail.map((item) => (
-          <div key={item.name} className="flex flex-row items-center gap-6">
-            <div className="bg-[#FFF2DB] rounded-full w-20 h-20 flex items-center justify-center flex-shrink-0">
-              <img src={item.icon} alt={item.alt} className="w-11 h-11" />
+        {/* ✅ Info Cards: Native-app feeling list items */}
+        <div className="flex flex-col gap-4 w-full">
+          <h3 className="text-gray-400 text-sm font-bold uppercase tracking-wider mb-2">Exercise Details</h3>
+          {extraDetail.map((item, index) => (
+            <div
+              key={item.name}
+              className="flex items-center gap-5 p-4 rounded-2xl bg-surface border border-gray-800 shadow-md transition-colors hover:bg-gray-800"
+            >
+              <div className="flex items-center justify-center w-14 h-14 rounded-full bg-black/50 text-primary border border-gray-700 p-3 flex-shrink-0">
+                <img
+                  src={item.icon}
+                  alt={item.alt}
+                  className="w-full h-full object-contain filter invert opacity-90"
+                />
+              </div>
+              <div className="flex flex-col">
+                <p className="text-sm text-gray-400 capitalize">
+                  {index === 0 ? "Body Part" : index === 1 ? "Target Muscle" : "Equipment"}
+                </p>
+                <p className="text-lg font-bold capitalize text-white">
+                  {item.name}
+                </p>
+              </div>
             </div>
-            <span className="capitalize text-lg lg:text-2xl text-gray-700">
-              {item.name}
-            </span>
-          </div>
-        ))}
+          ))}
+        </div>
 
         {/* ✅ Interactive Instructions Section */}
-        <div className="mt-4">
+        <div className="mt-8">
           <button
             onClick={() => setShowInstructions(!showInstructions)}
-            className="bg-red-500 text-white font-bold py-2 px-6 rounded-md hover:bg-red-600 transition duration-300"
+            className="w-full bg-primary text-white font-bold py-4 px-6 rounded-xl hover:bg-primary-dark transition duration-300 shadow-lg shadow-primary/20 flex justify-between items-center"
           >
-            {showInstructions ? "Hide Instructions" : "Show Instructions"}
+            <span>{showInstructions ? "Hide Instructions" : "Show Instructions"}</span>
+            <span className="text-xl">{showInstructions ? "−" : "+"}</span>
           </button>
 
           <AnimatePresence>
             {showInstructions && (
               <motion.ol
-                className="list-decimal list-inside mt-4 space-y-2 text-gray-600"
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                exit={{ opacity: 0, height: 0 }}
+                className="list-decimal list-outside ml-5 mt-6 space-y-4 text-gray-300"
+                initial={{ opacity: 0, height: 0, y: -10 }}
+                animate={{ opacity: 1, height: "auto", y: 0 }}
+                exit={{ opacity: 0, height: 0, y: -10 }}
               >
                 {instructions.map((step, index) => (
-                  <li key={index}>{step}</li>
+                  <li key={index} className="pl-2">{step}</li>
                 ))}
               </motion.ol>
             )}
