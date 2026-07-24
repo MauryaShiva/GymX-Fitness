@@ -4,7 +4,8 @@ import allExercisesData from "../data/exercises.json";
 import allEquipmentsData from "../data/equipments.json";
 import HorizontalScrollbar from "./HorizontalScrollbar.jsx";
 // Using lucide-react for a clean search icon. Make sure to install it: npm install lucide-react
-import { Search } from "lucide-react";
+import { Search, X } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const SearchExercises = ({ onSearch, bodyPart, setBodyPart }) => {
   // --- All State and Logic is UNCHANGED ---
@@ -12,6 +13,7 @@ const SearchExercises = ({ onSearch, bodyPart, setBodyPart }) => {
   const [bodyParts, setBodyParts] = useState([]);
   const [suggestions, setSuggestions] = useState([]);
   const [allSearchTerms, setAllSearchTerms] = useState([]);
+  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
 
   useEffect(() => {
     const bodyPartNames = allBodyPartsData.map((item) => item.name);
@@ -22,7 +24,14 @@ const SearchExercises = ({ onSearch, bodyPart, setBodyPart }) => {
     ];
     setAllSearchTerms(uniqueTerms);
     setBodyParts(["all", ...bodyPartNames]);
+
+    const handleOpenSearch = () => setIsMobileSearchOpen(true);
+    window.addEventListener("open-search", handleOpenSearch);
+
+    return () => window.removeEventListener("open-search", handleOpenSearch);
   }, []);
+
+  const handleCloseMobileSearch = () => setIsMobileSearchOpen(false);
 
   const handleInputChange = (e) => {
     const value = e.target.value;
@@ -54,6 +63,7 @@ const SearchExercises = ({ onSearch, bodyPart, setBodyPart }) => {
     if (search && isValidSearch) {
       onSearch(search);
       setSuggestions([]);
+      handleCloseMobileSearch();
       document
         .getElementById("exercises")
         ?.scrollIntoView({ behavior: "smooth" });
@@ -66,16 +76,19 @@ const SearchExercises = ({ onSearch, bodyPart, setBodyPart }) => {
   };
   // --- End of Unchanged Logic ---
 
-  return (
-    // ✅ Added a background gradient and padding for a better section feel
-    <section className="flex flex-col items-center mt-12 p-5 text-center bg-gradient-to-b from-black via-gray-900 to-black text-white py-20">
+  const renderSearchContent = () => (
+    <>
       {/* ✅ Enhanced typography for a more impactful heading */}
-      <h2 className="text-4xl lg:text-6xl font-extrabold mb-12 tracking-tighter">
+      <h2 className="text-4xl lg:text-6xl font-extrabold mb-12 tracking-tighter hidden md:block">
         Find Your Perfect Workout, <br />
         {/* ✅ Made the gradient text more vibrant */}
         <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-red-700">
           Right Now
         </span>
+      </h2>
+
+      <h2 className="text-3xl font-bold mb-8 md:hidden">
+        Search Exercises
       </h2>
 
       <div className="relative w-full max-w-3xl mb-16">
@@ -129,7 +142,39 @@ const SearchExercises = ({ onSearch, bodyPart, setBodyPart }) => {
         />
         <div className="absolute top-0 right-0 h-full w-24 bg-gradient-to-l from-black to-transparent z-0 pointer-events-none" />
       </div>
-    </section>
+    </>
+  );
+
+  return (
+    <>
+      {/* Desktop Inline Search */}
+      <section className="hidden md:flex flex-col items-center mt-12 p-5 text-center bg-gradient-to-b from-black via-gray-900 to-black text-white py-20 rounded-3xl">
+        {renderSearchContent()}
+      </section>
+
+      {/* Mobile Full-Screen Overlay Search */}
+      <AnimatePresence>
+        {isMobileSearchOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: "100%" }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: "100%" }}
+            transition={{ type: "spring", bounce: 0, duration: 0.4 }}
+            className="fixed inset-0 z-[100] bg-gray-900 text-white p-6 pt-safe-top flex flex-col md:hidden overflow-y-auto"
+          >
+            <div className="flex justify-end mb-4">
+              <button
+                onClick={handleCloseMobileSearch}
+                className="p-2 bg-gray-800 rounded-full text-gray-300 hover:text-white"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+            {renderSearchContent()}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 };
 
