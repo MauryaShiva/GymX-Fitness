@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { ArrowLeft } from "lucide-react";
 
 import allExercisesData from "../data/exercises.json";
 import { fetchData, youtubeOptions } from "../utils/fetchData";
@@ -10,13 +11,19 @@ import ExerciseVideos from "../components/ExerciseVideos.jsx";
 import SimilarExercises from "../components/SimilarExercises.jsx";
 import Loader from "../components/Loader.jsx";
 
+const pageVariants = {
+  initial: { opacity: 0, scale: 0.98 },
+  in: { opacity: 1, scale: 1 },
+  out: { opacity: 0, scale: 0.98 },
+};
+
 const ExerciseDetails = () => {
-  // --- Saara State aur Logic jaisa tha waisa hi hai ---
   const [exerciseDetail, setExerciseDetail] = useState(null);
   const [exerciseVideos, setExerciseVideos] = useState([]);
   const [targetMuscleExercises, setTargetMuscleExercises] = useState([]);
   const [equipmentExercises, setEquipmentExercises] = useState([]);
   const { id } = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -29,12 +36,16 @@ const ExerciseDetails = () => {
       const fetchVideos = async () => {
         const youtubeSearchUrl =
           "https://youtube-search-and-download.p.rapidapi.com";
-        const videosData = await fetchData(
-          `${youtubeSearchUrl}/search?query=${currentExercise.name} exercise`,
-          youtubeOptions
-        );
-        if (videosData.contents) {
-          setExerciseVideos(videosData.contents);
+        try {
+          const videosData = await fetchData(
+            `${youtubeSearchUrl}/search?query=${currentExercise.name} exercise`,
+            youtubeOptions
+          );
+          if (videosData.contents) {
+            setExerciseVideos(videosData.contents);
+          }
+        } catch (error) {
+          console.error("Failed to fetch videos", error);
         }
       };
       fetchVideos();
@@ -69,34 +80,36 @@ const ExerciseDetails = () => {
   if (!exerciseDetail) {
     return <Loader />;
   }
-  // --- Logic mein koi badlav nahi ---
 
   return (
-    // ✅ New UI: A clean, high-contrast light theme for better readability.
     <motion.main
-      className="bg-gray-50 text-gray-900 min-h-screen px-4 sm:px-6 lg:px-8"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, ease: "easeInOut" }}
+      className="bg-background text-text-primary min-h-screen relative w-full"
+      initial="initial"
+      animate="in"
+      exit="out"
+      variants={pageVariants}
+      transition={{ duration: 0.3 }}
     >
-      <div className="max-w-7xl mx-auto py-12 md:py-20">
-        {/*
-          NOTE: For the best look, the <Detail /> component should be updated
-          to use this new light theme with teal accents.
-        */}
-        <section className="mb-20">
-          <Detail exerciseDetail={exerciseDetail} />
-        </section>
+      {/* App-style Back Button for Mobile */}
+      <button
+        onClick={() => navigate(-1)}
+        className="md:hidden fixed top-safe-top left-4 z-50 p-2 mt-4 bg-surface/80 backdrop-blur-md rounded-full text-white shadow-lg border border-gray-800"
+      >
+        <ArrowLeft size={24} />
+      </button>
 
-        {/* ✅ Stylized Divider: Updated for the light theme. */}
-        <div className="w-full flex justify-center my-20">
-          <div className="w-1/3 h-px bg-gray-200"></div>
+      {/*
+        Hero Image Section (Mobile App Style)
+        This is now part of the detail component to keep it cohesive,
+        so we pass it down.
+      */}
+      <Detail exerciseDetail={exerciseDetail} />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+        <div className="w-full flex justify-center my-12">
+          <div className="w-1/3 h-px bg-gray-800"></div>
         </div>
 
-        {/*
-          NOTE: The <ExerciseVideos /> component should be updated to match,
-          with headings and links using the new teal accent color (e.g., text-teal-500).
-        */}
         <section className="mb-20">
           <ExerciseVideos
             exerciseVideos={exerciseVideos}
@@ -104,14 +117,10 @@ const ExerciseDetails = () => {
           />
         </section>
 
-        <div className="w-full flex justify-center my-20">
-          <div className="w-1/3 h-px bg-gray-200"></div>
+        <div className="w-full flex justify-center my-12">
+          <div className="w-1/3 h-px bg-gray-800"></div>
         </div>
 
-        {/*
-          NOTE: The <SimilarExercises /> component and its cards should be
-          redesigned for a light background to complete the look.
-        */}
         <section>
           <SimilarExercises
             targetMuscleExercises={targetMuscleExercises}
