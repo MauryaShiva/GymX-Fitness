@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import Fuse from "fuse.js";
 
-import allExercisesData from "../data/exercises.json"; // Local data import
+import allExercisesData from "../data/exercises.json";
 import HeroBanner from "../components/HeroBanner.jsx";
 import SearchExercises from "../components/SearchExercises.jsx";
 import Exercises from "../components/Exercises.jsx";
@@ -16,18 +17,40 @@ const sectionVariants = {
   },
 };
 
+const pageVariants = {
+  initial: { opacity: 0, x: "-100%" },
+  in: { opacity: 1, x: 0 },
+  out: { opacity: 0, x: "100%" },
+};
+
+const pageTransition = {
+  type: "spring",
+  damping: 25,
+  stiffness: 200,
+};
+
 const Home = () => {
-  // ✅ State ab local data se initialize ho raha hai
   const [exercises, setExercises] = useState(allExercisesData);
   const [bodyPart, setBodyPart] = useState("all");
+  const location = useLocation();
 
-  // Fuse.js setup for smart search
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get("search") === "true") {
+      // Remove query param without reloading to avoid infinite loops
+      window.history.replaceState({}, "", "/");
+      // Small delay to ensure component is mounted
+      setTimeout(() => {
+        window.dispatchEvent(new Event("open-search"));
+      }, 100);
+    }
+  }, [location]);
+
   const fuse = new Fuse(allExercisesData, {
     keys: ["name", "targetMuscles", "equipments", "bodyParts"],
     threshold: 0.4,
   });
 
-  // ✅ Filtering aur searching ka saara logic ab yahan hai
   const handleSearch = (searchTerm) => {
     if (searchTerm === "") {
       setExercises(allExercisesData);
@@ -55,7 +78,14 @@ const Home = () => {
   };
 
   return (
-    <div>
+    <motion.div
+      initial="initial"
+      animate="in"
+      exit="out"
+      variants={pageVariants}
+      transition={pageTransition}
+      className="pb-20 md:pb-0"
+    >
       <HeroBanner />
 
       <motion.div
@@ -65,7 +95,6 @@ const Home = () => {
         viewport={{ once: true, amount: 0.2 }}
       >
         <SearchExercises
-          // ✅ Naye functions ko as a prop pass karein
           onSearch={handleSearch}
           bodyPart={bodyPart}
           setBodyPart={handleBodyPartChange}
@@ -73,18 +102,18 @@ const Home = () => {
       </motion.div>
 
       <motion.div
+        id="exercises"
         variants={sectionVariants}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.2 }}
       >
         <Exercises
-          // ✅ Sirf zaroori props pass karein
           exercises={exercises}
           bodyPart={bodyPart}
         />
       </motion.div>
-    </div>
+    </motion.div>
   );
 };
 
