@@ -1,17 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import allBodyPartsData from "../data/bodyparts.json";
 import allExercisesData from "../data/exercises.json";
 import allEquipmentsData from "../data/equipments.json";
 import HorizontalScrollbar from "./HorizontalScrollbar.jsx";
-// Using lucide-react for a clean search icon. Make sure to install it: npm install lucide-react
-import { Search } from "lucide-react";
+import { Search, X } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const SearchExercises = ({ onSearch, bodyPart, setBodyPart }) => {
-  // --- All State and Logic is UNCHANGED ---
   const [search, setSearch] = useState("");
   const [bodyParts, setBodyParts] = useState([]);
   const [suggestions, setSuggestions] = useState([]);
   const [allSearchTerms, setAllSearchTerms] = useState([]);
+  const [isOverlayOpen, setIsOverlayOpen] = useState(false);
+  const searchInputRef = useRef(null);
 
   useEffect(() => {
     const bodyPartNames = allBodyPartsData.map((item) => item.name);
@@ -22,6 +23,22 @@ const SearchExercises = ({ onSearch, bodyPart, setBodyPart }) => {
     ];
     setAllSearchTerms(uniqueTerms);
     setBodyParts(["all", ...bodyPartNames]);
+
+    // Listen for custom event to open search overlay
+    const handleOpenSearch = () => {
+      setIsOverlayOpen(true);
+      setTimeout(() => {
+        if (searchInputRef.current) {
+          searchInputRef.current.focus();
+        }
+      }, 100);
+    };
+
+    window.addEventListener("open-search", handleOpenSearch);
+
+    return () => {
+      window.removeEventListener("open-search", handleOpenSearch);
+    };
   }, []);
 
   const handleInputChange = (e) => {
@@ -41,6 +58,7 @@ const SearchExercises = ({ onSearch, bodyPart, setBodyPart }) => {
     setSearch(suggestion);
     setSuggestions([]);
     onSearch(suggestion);
+    setIsOverlayOpen(false); // Close overlay on select
     document
       .getElementById("exercises")
       ?.scrollIntoView({ behavior: "smooth" });
@@ -54,62 +72,58 @@ const SearchExercises = ({ onSearch, bodyPart, setBodyPart }) => {
     if (search && isValidSearch) {
       onSearch(search);
       setSuggestions([]);
+      setIsOverlayOpen(false); // Close overlay on search
       document
         .getElementById("exercises")
         ?.scrollIntoView({ behavior: "smooth" });
-    } else {
-      // NOTE: Replaced alert() with a more user-friendly custom modal or toast in a real app.
-      alert(
-        "Please select a valid exercise, body part, or equipment from the suggestions."
-      );
+    } else if (search) {
+      // Allow general text search if it's not in the exact list, Fuse.js will handle it
+      onSearch(search);
+      setSuggestions([]);
+      setIsOverlayOpen(false);
+      document
+        .getElementById("exercises")
+        ?.scrollIntoView({ behavior: "smooth" });
     }
   };
-  // --- End of Unchanged Logic ---
 
-  return (
-    // ✅ Added a background gradient and padding for a better section feel
-    <section className="flex flex-col items-center mt-12 p-5 text-center bg-gradient-to-b from-black via-gray-900 to-black text-white py-20">
-      {/* ✅ Enhanced typography for a more impactful heading */}
-      <h2 className="text-4xl lg:text-6xl font-extrabold mb-12 tracking-tighter">
-        Find Your Perfect Workout, <br />
-        {/* ✅ Made the gradient text more vibrant */}
-        <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-red-700">
-          Right Now
-        </span>
+  // The actual search UI rendered as a function to avoid focus loss
+  const renderSearchContent = () => (
+    <div className="flex flex-col items-center w-full max-w-3xl">
+      <h2 className="text-3xl lg:text-5xl font-extrabold mb-8 tracking-tighter text-white">
+        Find Your Perfect Workout
       </h2>
 
-      <div className="relative w-full max-w-3xl mb-16">
-        {/* ✅ Using a modern icon from lucide-react */}
-        <div className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+      <div className="relative w-full mb-12">
+        <div className="absolute left-5 top-1/2 -translate-y-1/2 text-text-secondary pointer-events-none">
           <Search className="h-6 w-6" />
         </div>
-        {/* ✅ Revamped the input for a glassy, modern look */}
         <input
-          className="w-full h-16 bg-gray-800/50 text-white placeholder-gray-500 border border-gray-700 rounded-full py-2 pl-16 pr-40 text-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent backdrop-blur-sm transition-all duration-300"
+          ref={searchInputRef}
+          className="w-full h-14 bg-surface text-text-primary placeholder-text-secondary border border-gray-700 rounded-full py-2 pl-14 pr-32 text-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-300"
           value={search}
           onChange={handleInputChange}
-          placeholder="Search exercises, muscles, equipment..."
+          placeholder="Search exercises..."
           type="text"
           onKeyPress={(e) => e.key === "Enter" && handleLocalSearch()}
           onClick={(e) => e.target.select()}
         />
-        {/* ✅ Upgraded the button with a gradient and interactive effects */}
         <button
-          className="absolute right-2 top-1/2 -translate-y-1/2 bg-gradient-to-r from-red-600 to-red-800 text-white font-bold h-12 px-8 rounded-full text-lg hover:scale-105 active:scale-95 transform transition-all duration-300 shadow-lg shadow-red-500/20 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-black focus:ring-red-500"
+          className="absolute right-1 top-1/2 -translate-y-1/2 bg-primary text-background font-bold h-12 px-6 rounded-full text-md hover:scale-105 active:scale-95 transform transition-all duration-300 focus:outline-none"
           onClick={handleLocalSearch}
         >
           Search
         </button>
 
-        {/* ✅ Styled the suggestions dropdown for a better look and feel */}
         {suggestions.length > 0 && (
-          <ul className="absolute top-full mt-2 w-full bg-gray-800 border border-gray-700 rounded-xl shadow-lg z-10 text-left overflow-hidden">
+          <ul className="absolute top-full mt-2 w-full bg-surface border border-gray-700 rounded-xl shadow-2xl z-20 text-left overflow-hidden">
             {suggestions.map((suggestion, index) => (
               <li
                 key={index}
                 onClick={() => handleSuggestionClick(suggestion)}
-                className="px-5 py-3 text-gray-300 hover:bg-red-600 hover:text-white cursor-pointer transition-colors duration-200 capitalize"
+                className="px-5 py-3 text-text-primary hover:bg-gray-700 cursor-pointer transition-colors duration-200 capitalize flex items-center gap-3"
               >
+                <Search size={16} className="text-text-secondary" />
                 {suggestion}
               </li>
             ))}
@@ -117,19 +131,69 @@ const SearchExercises = ({ onSearch, bodyPart, setBodyPart }) => {
         )}
       </div>
 
-      {/* ✅ Container for the scrollbar. The key is that the scrollbar itself is now also `relative` */}
-      <div className="relative w-full max-w-7xl">
-        {/* ✅ These gradients now sit at a lower z-index, behind the scrollbar's arrows */}
-        <div className="absolute top-0 left-0 h-full w-24 bg-gradient-to-r from-black to-transparent z-0 pointer-events-none" />
+      <div className="relative w-full max-w-7xl pb-8">
+        <div className="absolute top-0 left-0 h-full w-12 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
         <HorizontalScrollbar
           data={bodyParts}
           bodyPart={bodyPart}
           setBodyPart={setBodyPart}
           isBodyParts
         />
-        <div className="absolute top-0 right-0 h-full w-24 bg-gradient-to-l from-black to-transparent z-0 pointer-events-none" />
+        <div className="absolute top-0 right-0 h-full w-12 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
       </div>
-    </section>
+    </div>
+  );
+
+  return (
+    <>
+      {/* Desktop Inline Search Section */}
+      <section className="hidden md:flex flex-col items-center mt-8 p-5 text-center bg-background">
+        {renderSearchContent()}
+      </section>
+
+      {/* Mobile Inline trigger (if they don't use navbar/bottomnav) */}
+      <section className="md:hidden flex flex-col items-center mt-4 px-4 text-center">
+        <button
+          onClick={() => setIsOverlayOpen(true)}
+          className="w-full h-14 bg-surface text-text-secondary border border-gray-700 rounded-xl flex items-center px-4 gap-3 text-lg"
+        >
+          <Search size={24} />
+          <span>Search exercises, muscles...</span>
+        </button>
+
+        <div className="w-full mt-8">
+           <HorizontalScrollbar
+            data={bodyParts}
+            bodyPart={bodyPart}
+            setBodyPart={setBodyPart}
+            isBodyParts
+          />
+        </div>
+      </section>
+
+      {/* Full-screen Mobile Search Overlay */}
+      <AnimatePresence>
+        {isOverlayOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: "100%" }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: "100%" }}
+            transition={{ type: "spring", damping: 25, stiffness: 200 }}
+            className="fixed inset-0 z-[100] bg-background/95 backdrop-blur-xl p-6 pt-safe-top flex flex-col overflow-y-auto"
+          >
+            <div className="flex justify-end mb-6">
+              <button
+                onClick={() => setIsOverlayOpen(false)}
+                className="p-2 bg-surface rounded-full text-text-primary"
+              >
+                <X size={24} />
+              </button>
+            </div>
+            {renderSearchContent()}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 };
 
