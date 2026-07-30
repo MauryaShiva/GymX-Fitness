@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Fuse from "fuse.js";
+import { useSearchParams } from "react-router-dom";
 
 import allExercisesData from "../data/exercises.json"; // Local data import
 import HeroBanner from "../components/HeroBanner.jsx";
@@ -17,9 +18,10 @@ const sectionVariants = {
 };
 
 const Home = () => {
-  // ✅ State ab local data se initialize ho raha hai
   const [exercises, setExercises] = useState(allExercisesData);
   const [bodyPart, setBodyPart] = useState("all");
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
 
   // Fuse.js setup for smart search
   const fuse = new Fuse(allExercisesData, {
@@ -27,7 +29,35 @@ const Home = () => {
     threshold: 0.4,
   });
 
-  // ✅ Filtering aur searching ka saara logic ab yahan hai
+  useEffect(() => {
+    // Check URL params for search trigger (e.g. from bottom nav on other pages)
+    if (searchParams.get("search") === "true") {
+      setIsSearchOpen(true);
+      // Clean up URL without triggering reload
+      setSearchParams({});
+    }
+
+    // Listen for custom event from Navbar/BottomNav
+    const handleOpenSearch = () => {
+      setIsSearchOpen(true);
+    };
+
+    window.addEventListener("open-search", handleOpenSearch);
+
+    // Handle resizing to switch between mobile overlay and desktop inline
+    const handleResize = () => {
+      if (window.innerWidth >= 768 && isSearchOpen) {
+        setIsSearchOpen(false);
+      }
+    };
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("open-search", handleOpenSearch);
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [searchParams, setSearchParams, isSearchOpen]);
+
   const handleSearch = (searchTerm) => {
     if (searchTerm === "") {
       setExercises(allExercisesData);
@@ -58,19 +88,32 @@ const Home = () => {
     <div>
       <HeroBanner />
 
-      <motion.div
-        variants={sectionVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.2 }}
-      >
+      {/* Desktop Search (Hidden on Mobile) */}
+      <div className="hidden md:block">
+        <motion.div
+          variants={sectionVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
+        >
+          <SearchExercises
+            onSearch={handleSearch}
+            bodyPart={bodyPart}
+            setBodyPart={handleBodyPartChange}
+          />
+        </motion.div>
+      </div>
+
+      {/* Mobile Search Overlay */}
+      <div className="md:hidden">
         <SearchExercises
-          // ✅ Naye functions ko as a prop pass karein
           onSearch={handleSearch}
           bodyPart={bodyPart}
           setBodyPart={handleBodyPartChange}
+          isOpen={isSearchOpen}
+          onClose={() => setIsSearchOpen(false)}
         />
-      </motion.div>
+      </div>
 
       <motion.div
         variants={sectionVariants}
@@ -79,7 +122,6 @@ const Home = () => {
         viewport={{ once: true, amount: 0.2 }}
       >
         <Exercises
-          // ✅ Sirf zaroori props pass karein
           exercises={exercises}
           bodyPart={bodyPart}
         />
