@@ -50,59 +50,62 @@ const Detail = ({ exerciseDetail }) => {
         src={gifUrl}
         alt={name}
         loading="lazy"
-        className="w-full max-w-md lg:max-w-lg shadow-lg rounded-lg"
+        className="w-full max-w-md lg:max-w-lg shadow-2xl rounded-2xl object-cover bg-white"
       />
 
       {/* ✅ Animate the text content as well */}
       <motion.div
         variants={itemVariants}
-        className="flex flex-col gap-5 lg:gap-6 w-full"
+        className="flex flex-col gap-5 lg:gap-6 w-full relative"
       >
-        <h1 className="text-3xl lg:text-5xl font-bold capitalize text-gray-800">
+        <h1 className="text-3xl lg:text-5xl font-bold capitalize text-white">
           {name}
         </h1>
-        <p className="text-base lg:text-lg text-gray-600">
+        <p className="text-base lg:text-lg text-gray-400">
           Exercises keep you strong.{" "}
-          <span className="capitalize font-semibold">{name}</span> is one of the
+          <span className="capitalize font-semibold text-white">{name}</span> is one of the
           best exercises to target your{" "}
-          <span className="font-semibold">{targetMuscles[0]}</span>. It will
+          <span className="font-semibold text-white">{targetMuscles[0]}</span>. It will
           help you improve your mood and gain energy.
         </p>
 
         {extraDetail.map((item) => (
           <div key={item.name} className="flex flex-row items-center gap-6">
-            <div className="bg-[#FFF2DB] rounded-full w-20 h-20 flex items-center justify-center flex-shrink-0">
+            <div className="bg-gray-800 rounded-full w-20 h-20 flex items-center justify-center flex-shrink-0 shadow-inner">
               <img src={item.icon} alt={item.alt} className="w-11 h-11" />
             </div>
-            <span className="capitalize text-lg lg:text-2xl text-gray-700">
+            <span className="capitalize text-lg lg:text-2xl text-gray-200">
               {item.name}
             </span>
           </div>
         ))}
 
         {/* ✅ Interactive Instructions Section */}
-        <div className="mt-4">
-          <button
-            onClick={() => setShowInstructions(!showInstructions)}
-            className="bg-red-500 text-white font-bold py-2 px-6 rounded-md hover:bg-red-600 transition duration-300"
-          >
-            {showInstructions ? "Hide Instructions" : "Show Instructions"}
-          </button>
-
+        <div className="mt-8 mb-24 md:mb-0">
           <AnimatePresence>
             {showInstructions && (
               <motion.ol
-                className="list-decimal list-inside mt-4 space-y-2 text-gray-600"
+                className="list-decimal list-inside mt-4 space-y-3 text-gray-300 bg-gray-800/50 p-6 rounded-2xl backdrop-blur-sm"
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: "auto" }}
                 exit={{ opacity: 0, height: 0 }}
               >
                 {instructions.map((step, index) => (
-                  <li key={index}>{step}</li>
+                  <li key={index} className="leading-relaxed">{step}</li>
                 ))}
               </motion.ol>
             )}
           </AnimatePresence>
+        </div>
+
+        {/* Sticky Action Button for Mobile */}
+        <div className="fixed bottom-24 right-4 z-40 md:relative md:bottom-auto md:right-auto md:z-auto">
+          <button
+            onClick={() => setShowInstructions(!showInstructions)}
+            className="bg-primary text-white font-bold py-3 px-8 rounded-full hover:bg-red-600 transition-all duration-300 shadow-lg shadow-red-500/30 active:scale-95"
+          >
+            {showInstructions ? "Hide Instructions" : "Show Instructions"}
+          </button>
         </div>
       </motion.div>
     </motion.div>
