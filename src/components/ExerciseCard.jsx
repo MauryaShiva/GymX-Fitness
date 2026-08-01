@@ -1,12 +1,17 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+
+const MotionLink = motion.create(Link);
 
 const ExerciseCard = ({ exercise }) => {
   return (
     // ✅ Main container: Dark theme, rounded corners, and a "group" class for hover effects
-    <Link
+    <MotionLink
       to={`/exercise/${exercise.exerciseId}`}
-      className="relative w-[350px] h-[450px] bg-gray-800 rounded-xl overflow-hidden shadow-lg group transition-all duration-300 ease-in-out hover:shadow-2xl hover:shadow-red-500/20 transform hover:-translate-y-2"
+      whileHover={{ y: -8, scale: 1.02 }}
+      whileTap={{ scale: 0.95 }}
+      className="relative w-full max-w-[350px] h-[400px] md:h-[450px] bg-surface rounded-2xl overflow-hidden shadow-lg group mx-auto block"
     >
       {/* ✅ Image with a subtle zoom effect on hover */}
       <img
@@ -36,7 +41,7 @@ const ExerciseCard = ({ exercise }) => {
           {exercise.name}
         </h3>
       </div>
-    </Link>
+    </MotionLink>
   );
 };
 
