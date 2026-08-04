@@ -1,1 +1,29 @@
 @import "tailwindcss";
+
+@theme {
+  --color-background: #111111;
+  --color-surface: #1e1e1e;
+  --color-primary: #ef4444;
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #9ca3af;
+}
+
+@utility pb-safe {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+@utility pt-safe-top {
+  padding-top: env(safe-area-inset-top);
+}
+
+@utility mt-safe-top {
+  margin-top: env(safe-area-inset-top);
+}
+
+@utility hide-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
