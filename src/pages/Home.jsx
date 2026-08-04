@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import Fuse from "fuse.js";
 
@@ -20,6 +21,25 @@ const Home = () => {
   // ✅ State ab local data se initialize ho raha hai
   const [exercises, setExercises] = useState(allExercisesData);
   const [bodyPart, setBodyPart] = useState("all");
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+
+  const location = useLocation();
+
+  useEffect(() => {
+    // Check if we navigated here with ?search=true
+    const queryParams = new URLSearchParams(location.search);
+    if (queryParams.get("search") === "true") {
+      setIsSearchOpen(true);
+      // Clean up URL without triggering a re-render/navigation
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  }, [location]);
+
+  useEffect(() => {
+    const handleOpenSearch = () => setIsSearchOpen(true);
+    window.addEventListener("open-search", handleOpenSearch);
+    return () => window.removeEventListener("open-search", handleOpenSearch);
+  }, []);
 
   // Fuse.js setup for smart search
   const fuse = new Fuse(allExercisesData, {
@@ -58,19 +78,14 @@ const Home = () => {
     <div>
       <HeroBanner />
 
-      <motion.div
-        variants={sectionVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.2 }}
-      >
-        <SearchExercises
-          // ✅ Naye functions ko as a prop pass karein
-          onSearch={handleSearch}
-          bodyPart={bodyPart}
-          setBodyPart={handleBodyPartChange}
-        />
-      </motion.div>
+      <SearchExercises
+        // ✅ Naye functions ko as a prop pass karein
+        onSearch={handleSearch}
+        bodyPart={bodyPart}
+        setBodyPart={handleBodyPartChange}
+        isOpen={isSearchOpen}
+        onClose={() => setIsSearchOpen(false)}
+      />
 
       <motion.div
         variants={sectionVariants}
