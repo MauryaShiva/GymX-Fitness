@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 
 // Import the CSS file which should contain your Tailwind directives
 import "./App.css";
@@ -11,100 +11,84 @@ import Home from "./pages/Home";
 import ExerciseDetail from "./pages/ExerciseDetails";
 import Footer from "./components/Footer";
 import HomeWorkouts from "./pages/HomeWorkouts.jsx";
-import BottomNav from "./components/BottomNav";
-
-const pageVariants = {
-  initial: { opacity: 0, y: 20 },
-  animate: { opacity: 1, y: 0, transition: { duration: 0.3 } },
-  exit: { opacity: 0, y: -20, transition: { duration: 0.2 } }
-};
+import BottomNav from "./components/BottomNav.jsx";
 
 const App = () => {
   const location = useLocation();
   const [deferredPrompt, setDeferredPrompt] = useState(null);
+  const [showInstallBanner, setShowInstallBanner] = useState(false);
 
   useEffect(() => {
     const handleBeforeInstallPrompt = (e) => {
       e.preventDefault();
       setDeferredPrompt(e);
+      setShowInstallBanner(true);
     };
 
-    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
 
     return () => {
-      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+      window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
     };
   }, []);
 
+  const handleInstallClick = async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      if (outcome === "accepted") {
+        console.log("User accepted the install prompt");
+      } else {
+        console.log("User dismissed the install prompt");
+      }
+      setDeferredPrompt(null);
+      setShowInstallBanner(false);
+    }
+  };
+
   return (
-    <div className="App bg-background text-text-primary min-h-screen pb-16 md:pb-0">
+    <div className="App bg-background text-text-primary min-h-screen">
       {/* Top Navigation */}
       <Navbar />
 
-      {/* Optional Install Banner */}
-      <AnimatePresence>
-        {deferredPrompt && (
-          <motion.div
-            initial={{ opacity: 0, y: -50 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -50 }}
-            className="fixed top-16 md:top-20 left-0 right-0 z-40 bg-surface border-b border-gray-800 p-4 flex items-center justify-between shadow-lg"
-          >
-            <div className="flex flex-col">
-              <span className="font-semibold text-text-primary">Install GymX</span>
-              <span className="text-sm text-text-secondary">Get the full native app experience</span>
-            </div>
-            <div className="flex gap-3">
-              <button
-                onClick={() => setDeferredPrompt(null)}
-                className="px-4 py-2 text-sm text-text-secondary hover:text-white transition-colors"
-              >
-                Not Now
-              </button>
-              <button
-                onClick={async () => {
-                  deferredPrompt.prompt();
-                  const { outcome } = await deferredPrompt.userChoice;
-                  if (outcome === 'accepted') {
-                    setDeferredPrompt(null);
-                  }
-                }}
-                className="px-4 py-2 text-sm bg-primary text-white rounded-lg font-medium shadow-lg shadow-primary/30"
-              >
-                Install
-              </button>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 md:px-8 pt-24 md:pt-28 pb-4 md:py-6 min-h-screen">
+      <main className="max-w-7xl mx-auto px-4 md:px-8 py-4 md:py-6 min-h-screen pb-24 md:pb-12">
         <AnimatePresence mode="wait">
           <Routes location={location} key={location.pathname}>
-            <Route path="/" element={
-              <motion.div variants={pageVariants} initial="initial" animate="animate" exit="exit">
-                <Home />
-              </motion.div>
-            } />
-            <Route path="/exercise/:id" element={
-              <motion.div variants={pageVariants} initial="initial" animate="animate" exit="exit">
-                <ExerciseDetail />
-              </motion.div>
-            } />
-            <Route path="/home-workouts" element={
-              <motion.div variants={pageVariants} initial="initial" animate="animate" exit="exit">
-                <HomeWorkouts />
-              </motion.div>
-            } />
+            <Route path="/" element={<Home />} />
+            <Route path="/exercise/:id" element={<ExerciseDetail />} />
+            <Route path="/home-workouts" element={<HomeWorkouts />} />
           </Routes>
         </AnimatePresence>
       </main>
 
+      {/* PWA Install Banner */}
+      {showInstallBanner && (
+        <div className="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 bg-surface border border-gray-700 text-white p-4 rounded-xl shadow-2xl flex flex-col sm:flex-row items-center gap-4 w-[90%] max-w-md mx-auto">
+          <p className="text-sm font-medium text-center sm:text-left">
+            Install GymX for a better experience!
+          </p>
+          <div className="flex gap-2 w-full sm:w-auto">
+             <button
+              onClick={handleInstallClick}
+              className="bg-primary text-background font-bold py-2 px-4 rounded-md hover:bg-opacity-90 w-full sm:w-auto text-sm"
+            >
+              Install
+            </button>
+            <button
+              onClick={() => setShowInstallBanner(false)}
+              className="bg-gray-700 text-white font-medium py-2 px-4 rounded-md hover:bg-gray-600 w-full sm:w-auto text-sm"
+            >
+              Later
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Footer Section */}
       <Footer />
 
-      {/* Mobile Bottom Navigation */}
+      {/* Bottom Navigation for Mobile */}
       <BottomNav />
     </div>
   );

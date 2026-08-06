@@ -10,29 +10,33 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: "autoUpdate",
-      workbox: {
-        maximumFileSizeToCacheInBytes: 10 * 1024 * 1024,
-      },
+      includeAssets: ["favicon.ico", "apple-touch-icon.png", "masked-icon.svg"],
       manifest: {
-        name: "GymX Fitness",
+        name: "GymX Fitness App",
         short_name: "GymX",
-        description: "Your personal fitness companion",
-        theme_color: "#000000",
-        background_color: "#000000",
+        description: "Your ultimate fitness companion.",
+        theme_color: "#121212",
+        background_color: "#121212",
         display: "standalone",
+        orientation: "portrait",
         icons: [
           {
-            src: "/gym-icon.png",
+            src: "/pwa-192x192.png",
             sizes: "192x192",
             type: "image/png"
           },
           {
-            src: "/gym-icon.png",
+            src: "/pwa-512x512.png",
             sizes: "512x512",
-            type: "image/png"
+            type: "image/png",
+            purpose: "any maskable"
           }
         ]
+      },
+      workbox: {
+        maximumFileSizeToCacheInBytes: 10 * 1024 * 1024, // 10MB
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,json,gif}']
       }
-    }),
+    })
   ],
 });

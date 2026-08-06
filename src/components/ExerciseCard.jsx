@@ -2,42 +2,39 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 
-const MotionLink = motion.create(Link);
-
 const ExerciseCard = ({ exercise }) => {
+  const MotionLink = motion.create(Link);
+
   return (
-    // ✅ Main container: Dark theme, rounded corners, and a "group" class for hover effects
     <MotionLink
       to={`/exercise/${exercise.exerciseId}`}
-      whileHover={{ scale: 1.05 }}
+      whileHover={{ scale: 1.02, y: -5 }}
       whileTap={{ scale: 0.95 }}
-      className="relative w-full aspect-[3/4] bg-gray-800 rounded-xl overflow-hidden shadow-lg group"
+      className="relative w-full max-w-[350px] mx-auto h-[400px] md:h-[450px] bg-surface rounded-2xl overflow-hidden shadow-lg group transition-shadow duration-300 ease-in-out hover:shadow-2xl hover:shadow-primary/20 block border border-gray-800"
     >
-      {/* ✅ Image with a subtle zoom effect on hover */}
+      {/* Image with zoom effect */}
       <img
         src={exercise.gifUrl}
         alt={exercise.name}
         loading="lazy"
-        className="w-full h-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-110"
+        className="w-full h-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
       />
 
-      {/* ✅ Gradient overlay for better text readability and a professional look */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
+      {/* Improved gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-90 group-hover:opacity-100 transition-opacity duration-300"></div>
 
-      {/* ✅ Container for all the text content, positioned at the bottom */}
-      <div className="absolute bottom-0 left-0 right-0 p-5 text-white backdrop-blur-sm bg-black/30">
-        {/* ✅ Tags with a modern, semi-transparent background */}
-        <div className="flex flex-row gap-2 mb-3">
-          <span className="bg-red-500/80 text-white text-xs font-semibold rounded-full capitalize py-1 px-3 backdrop-blur-sm">
+      {/* Content Container */}
+      <div className="absolute bottom-0 left-0 right-0 p-6 text-white z-10">
+        <div className="flex flex-wrap gap-2 mb-4">
+          <span className="bg-primary/90 text-background text-xs font-bold rounded-full capitalize py-1.5 px-3 backdrop-blur-md shadow-sm">
             {exercise.bodyParts[0]}
           </span>
-          <span className="bg-yellow-500/80 text-white text-xs font-semibold rounded-full capitalize py-1 px-3 backdrop-blur-sm">
+          <span className="bg-secondary/90 text-background text-xs font-bold rounded-full capitalize py-1.5 px-3 backdrop-blur-md shadow-sm">
             {exercise.targetMuscles[0]}
           </span>
         </div>
 
-        {/* ✅ Exercise name with improved typography */}
-        <h3 className="font-bold capitalize text-2xl tracking-tight">
+        <h3 className="font-extrabold capitalize text-2xl md:text-3xl tracking-tight leading-tight text-white drop-shadow-md">
           {exercise.name}
         </h3>
       </div>

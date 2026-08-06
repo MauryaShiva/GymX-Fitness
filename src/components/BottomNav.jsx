@@ -1,7 +1,7 @@
-import React from 'react';
-import { NavLink, useLocation, useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { Home as HomeIcon, Dumbbell, Search } from 'lucide-react';
+import React from "react";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import { Home as HomeIcon, FitnessCenter, Search as SearchIcon, CalendarToday } from "@mui/icons-material";
+import { motion } from "framer-motion";
 
 const BottomNav = () => {
   const location = useLocation();
@@ -9,53 +9,67 @@ const BottomNav = () => {
 
   const handleSearchClick = (e) => {
     e.preventDefault();
-    if (location.pathname !== '/') {
-      navigate('/?search=true');
+    if (location.pathname !== "/") {
+      navigate("/?search=true");
     } else {
-      window.dispatchEvent(new Event('open-search'));
+      window.dispatchEvent(new Event("open-search"));
     }
   };
 
-  const navItems = [
-    { name: 'Home', path: '/', icon: HomeIcon },
-    { name: 'Search', action: handleSearchClick, icon: Search },
-    { name: 'Workouts', path: '/home-workouts', icon: Dumbbell },
-  ];
+  const MotionNavLink = motion.create(NavLink);
+  const MotionButton = motion.create("button");
+
+  const activeClass = "flex flex-col items-center justify-center text-red-500 w-full h-full";
+  const inactiveClass = "flex flex-col items-center justify-center text-gray-400 hover:text-red-300 transition-colors w-full h-full";
 
   return (
-    <motion.nav
-      initial={{ y: 100 }}
-      animate={{ y: 0 }}
-      className="md:hidden fixed bottom-0 w-full z-50 bg-black/80 backdrop-blur-md border-t border-gray-800 pb-safe"
-    >
+    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-md border-t border-gray-800 pb-safe">
       <div className="flex justify-around items-center h-16">
-        {navItems.map((item) => (
-          item.path ? (
-            <NavLink
-              key={item.name}
-              to={item.path}
-              className={({ isActive }) =>
-                `flex flex-col items-center justify-center w-full h-full space-y-1 transition-colors duration-200 ${
-                  isActive ? 'text-primary' : 'text-gray-400 hover:text-white'
-                }`
-              }
-            >
-              <item.icon size={24} />
-              <span className="text-[10px] font-medium">{item.name}</span>
-            </NavLink>
-          ) : (
-            <button
-              key={item.name}
-              onClick={item.action}
-              className="flex flex-col items-center justify-center w-full h-full space-y-1 text-gray-400 hover:text-white transition-colors duration-200"
-            >
-              <item.icon size={24} />
-              <span className="text-[10px] font-medium">{item.name}</span>
-            </button>
-          )
-        ))}
+        <MotionNavLink
+          to="/"
+          className={({ isActive }) => (isActive && location.search !== "?search=true" ? activeClass : inactiveClass)}
+          whileTap={{ scale: 0.9 }}
+        >
+          <HomeIcon fontSize="small" />
+          <span className="text-[10px] mt-1 font-medium">Home</span>
+        </MotionNavLink>
+
+        <MotionNavLink
+          to="/#exercises"
+          onClick={(e) => {
+            if (location.pathname === "/") {
+              e.preventDefault();
+              document.getElementById("exercises")?.scrollIntoView({ behavior: "smooth" });
+            }
+          }}
+          className={inactiveClass}
+          whileTap={{ scale: 0.9 }}
+        >
+          <FitnessCenter fontSize="small" />
+          <span className="text-[10px] mt-1 font-medium">Exercises</span>
+        </MotionNavLink>
+
+        <MotionButton
+          onClick={handleSearchClick}
+          className="flex flex-col items-center justify-center w-full h-full text-gray-400 hover:text-red-300 transition-colors"
+          whileTap={{ scale: 0.9 }}
+        >
+          <div className="bg-red-600 rounded-full p-3 shadow-lg shadow-red-600/30 -mt-6 border-4 border-black">
+            <SearchIcon className="text-white" />
+          </div>
+          <span className="text-[10px] mt-1 font-medium hidden">Search</span>
+        </MotionButton>
+
+        <MotionNavLink
+          to="/home-workouts"
+          className={({ isActive }) => (isActive ? activeClass : inactiveClass)}
+          whileTap={{ scale: 0.9 }}
+        >
+          <CalendarToday fontSize="small" />
+          <span className="text-[10px] mt-1 font-medium">Workouts</span>
+        </MotionNavLink>
       </div>
-    </motion.nav>
+    </nav>
   );
 };
 
