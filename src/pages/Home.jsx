@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Fuse from "fuse.js";
+import { useSearchParams } from "react-router-dom";
 
 import allExercisesData from "../data/exercises.json"; // Local data import
 import HeroBanner from "../components/HeroBanner.jsx";
@@ -20,6 +21,15 @@ const Home = () => {
   // ✅ State ab local data se initialize ho raha hai
   const [exercises, setExercises] = useState(allExercisesData);
   const [bodyPart, setBodyPart] = useState("all");
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  useEffect(() => {
+    if (searchParams.get("search") === "true") {
+      window.dispatchEvent(new Event("open-search"));
+      // Clean up the URL parameter without triggering a full re-render navigate
+      setSearchParams({});
+    }
+  }, [searchParams, setSearchParams]);
 
   // Fuse.js setup for smart search
   const fuse = new Fuse(allExercisesData, {
