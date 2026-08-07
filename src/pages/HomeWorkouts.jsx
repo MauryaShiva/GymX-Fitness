@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-// Assuming you have a data file for the weekly plan
+import { motion, AnimatePresence } from "framer-motion";
 import { weeklyPlan } from "../data/weeklyPlan";
-// Using lucide-react for clean, modern icons. Make sure to install it: npm install lucide-react
 import {
   Dumbbell,
   HeartPulse,
@@ -12,7 +11,6 @@ import {
   CalendarCheck,
 } from "lucide-react";
 
-// An object to map workout focus to a specific icon for visual flair
 const focusIcons = {
   "Full Body": <Dumbbell className="w-5 h-5 mr-2" />,
   "Upper Body": <HeartPulse className="w-5 h-5 mr-2" />,
@@ -21,6 +19,12 @@ const focusIcons = {
   Core: <Repeat className="w-5 h-5 mr-2" />,
   "Active Recovery": <CalendarCheck className="w-5 h-5 mr-2" />,
   "Rest Day": <Coffee className="w-5 h-5 mr-2" />,
+};
+
+const pageVariants = {
+  initial: { opacity: 0, x: 20 },
+  in: { opacity: 1, x: 0, transition: { duration: 0.4, ease: "easeOut" } },
+  out: { opacity: 0, x: -20, transition: { duration: 0.3, ease: "easeIn" } }
 };
 
 const HomeWorkouts = () => {
@@ -33,109 +37,112 @@ const HomeWorkouts = () => {
   const videoIds = selectedWorkout?.videos || [];
 
   return (
-    // ✅ Added a subtle background gradient for more visual depth
-    <div className="pt-24 min-h-screen px-6 lg:px-12 pb-12 bg-gradient-to-b from-gray-900 to-black text-white">
-      <div className="max-w-7xl mx-auto">
-        {/* ✅ Centered the header text for a more impactful title section */}
+    <motion.div
+      initial="initial"
+      animate="in"
+      exit="out"
+      variants={pageVariants}
+      className="bg-background text-text-primary min-h-screen pt-4 pb-12"
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h1 className="text-4xl lg:text-6xl font-extrabold text-white mb-4 tracking-tight">
+          <h1 className="text-4xl lg:text-5xl xl:text-6xl font-extrabold text-white mb-4 tracking-tight">
             Weekly Home Plan
           </h1>
-          <p className="text-lg text-gray-400 max-w-2xl mx-auto">
+          <p className="text-base lg:text-lg text-text-secondary max-w-2xl mx-auto">
             Your personalized weekly workout schedule. Select a day to view your
             video routines.
           </p>
         </div>
 
-        {/* Day Selector - Enhanced with gradients, shadows, and hover effects */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-4 mb-16">
+        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3 mb-12 sm:mb-16">
           {Object.values(weeklyPlan).map((dayPlan) => {
             const isSelected = selectedDay === dayPlan.day.toLowerCase();
             return (
               <button
                 key={dayPlan.day}
                 onClick={() => setSelectedDay(dayPlan.day.toLowerCase())}
-                // ✅ Enhanced styling for buttons:
-                // - Added a subtle border and shadow for a "card" feel.
-                // - Improved hover and selected states for better interactivity.
-                className={`p-4 rounded-xl text-left transition-all duration-300 transform hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-black ${
+                className={`p-3 rounded-xl text-left transition-all duration-300 transform active:scale-95 focus:outline-none focus:ring-2 focus:ring-primary ${
                   isSelected
-                    ? "bg-red-600 text-white shadow-lg scale-105 ring-2 ring-red-500"
-                    : "bg-gray-800 border border-gray-700 hover:bg-gray-700 hover:border-red-500"
+                    ? "bg-primary text-background shadow-lg scale-[1.02]"
+                    : "bg-surface border border-gray-800 hover:border-gray-600 hover:bg-gray-800"
                 }`}
               >
-                <p className="font-bold text-lg">{dayPlan.day}</p>
+                <p className={`font-bold text-base ${isSelected ? "text-background" : "text-white"}`}>{dayPlan.day}</p>
                 <div
-                  className={`flex items-center text-sm mt-1 ${
-                    isSelected ? "text-red-100" : "text-gray-400"
+                  className={`flex items-center text-xs mt-1 ${
+                    isSelected ? "text-background/80" : "text-text-secondary"
                   }`}
                 >
-                  {/* ✅ Added icons next to the workout focus */}
                   {focusIcons[dayPlan.focus] || (
-                    <Dumbbell className="w-5 h-5 mr-2" />
+                    <Dumbbell className="w-4 h-4 mr-1" />
                   )}
-                  {dayPlan.focus}
+                  <span className="truncate">{dayPlan.focus}</span>
                 </div>
               </button>
             );
           })}
         </div>
 
-        {/* Daily Workout Video Display */}
-        <div>
-          <h2 className="text-3xl lg:text-4xl font-bold text-white mb-8 capitalize">
-            {selectedDay}'s Focus:{" "}
-            <span className="text-red-500">{selectedWorkout.focus}</span>
-          </h2>
-          {videoIds.length > 0 ? (
-            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
-              {videoIds.map((videoId, index) => (
-                // ✅ Added a fade-in animation to the video cards
-                <div
-                  key={videoId}
-                  className="aspect-video bg-gray-800 rounded-xl shadow-2xl overflow-hidden border border-gray-700 transform hover:scale-105 transition-transform duration-300"
-                  style={{
-                    animation: `fadeIn 0.5s ease-in-out ${
-                      index * 0.1
-                    }s forwards`,
-                    opacity: 0,
-                  }}
-                >
-                  <iframe
-                    width="100%"
-                    height="100%"
-                    src={`https://www.youtube.com/embed/${videoId}`}
-                    title="YouTube Workout Video"
-                    frameBorder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                    className="rounded-xl"
-                  ></iframe>
-                </div>
-              ))}
-            </div>
-          ) : (
-            // ✅ Revamped the "Rest Day" card to be more visually appealing
-            <div className="bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700 rounded-xl p-8 text-center h-80 flex flex-col justify-center items-center shadow-lg">
-              <Coffee size={64} className="text-red-500 mb-4" />
-              <p className="text-4xl font-bold text-white">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={selectedDay}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.3 }}
+          >
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-8 capitalize flex items-center gap-3">
+              <span>{selectedDay}'s Focus:</span>
+              <span className="text-primary bg-primary/10 px-4 py-1 rounded-full text-xl sm:text-2xl lg:text-3xl">
                 {selectedWorkout.focus}
-              </p>
-              <p className="text-gray-400 mt-2 text-lg">
-                Recovery is key to progress. Enjoy your day off!
-              </p>
-            </div>
-          )}
-        </div>
+              </span>
+            </h2>
+
+            {videoIds.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 sm:gap-8">
+                {videoIds.map((videoId, index) => (
+                  <motion.div
+                    key={videoId}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, delay: index * 0.1 }}
+                    className="aspect-video bg-surface rounded-2xl shadow-xl overflow-hidden border border-gray-800 group"
+                  >
+                    <iframe
+                      width="100%"
+                      height="100%"
+                      src={`https://www.youtube.com/embed/${videoId}`}
+                      title="YouTube Workout Video"
+                      frameBorder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      className="rounded-2xl transition-transform duration-300 group-hover:scale-[1.01]"
+                    ></iframe>
+                  </motion.div>
+                ))}
+              </div>
+            ) : (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="bg-surface border border-gray-800 rounded-3xl p-8 sm:p-12 text-center flex flex-col justify-center items-center shadow-2xl max-w-2xl mx-auto"
+              >
+                <div className="bg-primary/20 p-6 rounded-full mb-6">
+                  <Coffee size={48} className="text-primary" />
+                </div>
+                <p className="text-3xl sm:text-4xl font-extrabold text-white mb-4">
+                  {selectedWorkout.focus}
+                </p>
+                <p className="text-text-secondary text-lg max-w-md">
+                  Recovery is key to progress. Enjoy your well-deserved day off!
+                </p>
+              </motion.div>
+            )}
+          </motion.div>
+        </AnimatePresence>
       </div>
-      {/* ✅ Added a keyframes animation for the fade-in effect */}
-      <style>{`
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-      `}</style>
-    </div>
+    </motion.div>
   );
 };
 
