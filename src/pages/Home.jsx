@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import Fuse from "fuse.js";
 
@@ -17,9 +18,22 @@ const sectionVariants = {
 };
 
 const Home = () => {
-  // ✅ State ab local data se initialize ho raha hai
   const [exercises, setExercises] = useState(allExercisesData);
   const [bodyPart, setBodyPart] = useState("all");
+
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  // Intercept ?search=true from other routes
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    if (queryParams.get("search") === "true") {
+      // Remove query param without triggering full reload
+      navigate(location.pathname, { replace: true });
+      // Dispatch search event
+      window.dispatchEvent(new Event("execute-search"));
+    }
+  }, [location, navigate]);
 
   // Fuse.js setup for smart search
   const fuse = new Fuse(allExercisesData, {
@@ -27,7 +41,6 @@ const Home = () => {
     threshold: 0.4,
   });
 
-  // ✅ Filtering aur searching ka saara logic ab yahan hai
   const handleSearch = (searchTerm) => {
     if (searchTerm === "") {
       setExercises(allExercisesData);
@@ -55,7 +68,7 @@ const Home = () => {
   };
 
   return (
-    <div>
+    <div className="bg-background min-h-screen pb-safe">
       <HeroBanner />
 
       <motion.div
@@ -65,7 +78,6 @@ const Home = () => {
         viewport={{ once: true, amount: 0.2 }}
       >
         <SearchExercises
-          // ✅ Naye functions ko as a prop pass karein
           onSearch={handleSearch}
           bodyPart={bodyPart}
           setBodyPart={handleBodyPartChange}
@@ -79,7 +91,6 @@ const Home = () => {
         viewport={{ once: true, amount: 0.2 }}
       >
         <Exercises
-          // ✅ Sirf zaroori props pass karein
           exercises={exercises}
           bodyPart={bodyPart}
         />
