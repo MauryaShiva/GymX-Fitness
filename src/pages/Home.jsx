@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import Fuse from "fuse.js";
 
@@ -17,9 +18,23 @@ const sectionVariants = {
 };
 
 const Home = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
   // ✅ State ab local data se initialize ho raha hai
   const [exercises, setExercises] = useState(allExercisesData);
   const [bodyPart, setBodyPart] = useState("all");
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get("search") === "true") {
+      // Remove search param from URL without refreshing
+      navigate(location.pathname, { replace: true });
+      // Slight delay to ensure SearchExercises component is mounted and listening
+      setTimeout(() => {
+        window.dispatchEvent(new Event("open-search"));
+      }, 100);
+    }
+  }, [location, navigate]);
 
   // Fuse.js setup for smart search
   const fuse = new Fuse(allExercisesData, {
