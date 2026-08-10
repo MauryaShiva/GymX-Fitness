@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { useLocation, useNavigate } from "react-router-dom";
 import Fuse from "fuse.js";
 
 import allExercisesData from "../data/exercises.json"; // Local data import
@@ -16,10 +17,42 @@ const sectionVariants = {
   },
 };
 
+const pageVariants = {
+  initial: { opacity: 0, x: -20 },
+  in: { opacity: 1, x: 0 },
+  out: { opacity: 0, x: 20 }
+};
+
+const pageTransition = {
+  type: "tween",
+  ease: "anticipate",
+  duration: 0.5
+};
+
 const Home = () => {
-  // ✅ State ab local data se initialize ho raha hai
   const [exercises, setExercises] = useState(allExercisesData);
   const [bodyPart, setBodyPart] = useState("all");
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  // Handle route query param and custom events for mobile search overlay
+  useEffect(() => {
+    const handleOpenSearch = () => {
+      setIsSearchOpen(true);
+      // Clean up the URL if we came from another page via ?search=true
+      if (location.search.includes('search=true')) {
+        navigate('/', { replace: true });
+      }
+    };
+
+    if (location.search.includes('search=true')) {
+      handleOpenSearch();
+    }
+
+    window.addEventListener('open-search', handleOpenSearch);
+    return () => window.removeEventListener('open-search', handleOpenSearch);
+  }, [location, navigate]);
 
   // Fuse.js setup for smart search
   const fuse = new Fuse(allExercisesData, {
@@ -27,7 +60,6 @@ const Home = () => {
     threshold: 0.4,
   });
 
-  // ✅ Filtering aur searching ka saara logic ab yahan hai
   const handleSearch = (searchTerm) => {
     if (searchTerm === "") {
       setExercises(allExercisesData);
@@ -55,7 +87,13 @@ const Home = () => {
   };
 
   return (
-    <div>
+    <motion.div
+      initial="initial"
+      animate="in"
+      exit="out"
+      variants={pageVariants}
+      transition={pageTransition}
+    >
       <HeroBanner />
 
       <motion.div
@@ -65,10 +103,11 @@ const Home = () => {
         viewport={{ once: true, amount: 0.2 }}
       >
         <SearchExercises
-          // ✅ Naye functions ko as a prop pass karein
           onSearch={handleSearch}
           bodyPart={bodyPart}
           setBodyPart={handleBodyPartChange}
+          isOpen={isSearchOpen}
+          onClose={() => setIsSearchOpen(false)}
         />
       </motion.div>
 
@@ -79,12 +118,11 @@ const Home = () => {
         viewport={{ once: true, amount: 0.2 }}
       >
         <Exercises
-          // ✅ Sirf zaroori props pass karein
           exercises={exercises}
           bodyPart={bodyPart}
         />
       </motion.div>
-    </div>
+    </motion.div>
   );
 };
 
