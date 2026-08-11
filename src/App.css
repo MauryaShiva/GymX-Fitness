@@ -1,1 +1,38 @@
 @import "tailwindcss";
+
+@theme {
+  --color-background: #18181b; /* zinc-900 */
+  --color-surface: #27272a; /* zinc-800 */
+  --color-primary: #ef4444; /* red-500 */
+  --color-text-primary: #f4f4f5; /* zinc-100 */
+  --color-text-secondary: #a1a1aa; /* zinc-400 */
+}
+
+@utility pb-safe {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+@utility pt-safe-top {
+  padding-top: env(safe-area-inset-top);
+}
+
+@utility mt-safe-top {
+  margin-top: env(safe-area-inset-top);
+}
+
+@utility min-h-screen-safe {
+  min-height: calc(100vh - env(safe-area-inset-bottom) - env(safe-area-inset-top));
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-text-primary);
+}
+
+/* Base resets to match the new dark theme */
+html {
+  background-color: #18181b;
+  color: #f4f4f5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

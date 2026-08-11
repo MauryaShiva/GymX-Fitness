@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { useLocation } from "react-router-dom";
 import Fuse from "fuse.js";
 
 import allExercisesData from "../data/exercises.json"; // Local data import
@@ -17,9 +18,20 @@ const sectionVariants = {
 };
 
 const Home = () => {
+  const location = useLocation();
   // ✅ State ab local data se initialize ho raha hai
   const [exercises, setExercises] = useState(allExercisesData);
   const [bodyPart, setBodyPart] = useState("all");
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get("search") === "true") {
+      // Small timeout to ensure components are mounted before dispatching
+      setTimeout(() => {
+        window.dispatchEvent(new CustomEvent("open-search"));
+      }, 100);
+    }
+  }, [location]);
 
   // Fuse.js setup for smart search
   const fuse = new Fuse(allExercisesData, {
