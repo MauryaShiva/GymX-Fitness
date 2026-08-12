@@ -1,13 +1,12 @@
 import React, { useState } from "react";
-// ✅ Import 'motion' and 'AnimatePresence' for animations
 import { motion, AnimatePresence } from "framer-motion";
+import { PlayCircle } from "lucide-react"; // Or similar icon
 
 import BodyPartImage from "../assets/icons/body-part.png";
 import TargetImage from "../assets/icons/target.png";
 import EquipmentImage from "../assets/icons/equipment.png";
 
 const Detail = ({ exerciseDetail }) => {
-  // ✅ Add state to manage showing/hiding the instructions
   const [showInstructions, setShowInstructions] = useState(false);
 
   const { bodyParts, gifUrl, name, targetMuscles, equipments, instructions } =
@@ -23,89 +22,108 @@ const Detail = ({ exerciseDetail }) => {
     { icon: EquipmentImage, name: equipments[0], alt: "equipment icon" },
   ];
 
-  // Animation variants for a staggered fade-in effect
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.2, delayChildren: 0.1 },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: { y: 0, opacity: 1 },
-  };
-
   return (
-    // ✅ Wrap the main container in a motion.div for entry animation
-    <motion.div
-      className="flex flex-col lg:flex-row p-5 items-center gap-10"
-      variants={containerVariants}
-      initial="hidden"
-      animate="visible"
-    >
-      <motion.img
-        variants={itemVariants}
-        src={gifUrl}
-        alt={name}
-        loading="lazy"
-        className="w-full max-w-md lg:max-w-lg shadow-lg rounded-lg"
-      />
-
-      {/* ✅ Animate the text content as well */}
+    <div className="flex flex-col lg:flex-row bg-background">
+      {/* Mobile-first Hero Image section */}
       <motion.div
-        variants={itemVariants}
-        className="flex flex-col gap-5 lg:gap-6 w-full"
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5 }}
+        className="w-full lg:w-1/2 bg-white flex justify-center items-center overflow-hidden lg:rounded-3xl shadow-xl shadow-black/40 -mt-16 md:mt-0 pt-16 md:pt-0"
       >
-        <h1 className="text-3xl lg:text-5xl font-bold capitalize text-gray-800">
+        <img
+          src={gifUrl}
+          alt={name}
+          loading="lazy"
+          className="w-full h-auto object-contain max-h-[50vh] md:max-h-[600px] mix-blend-multiply" // Added mix-blend-multiply to blend the white GIF background if needed
+        />
+      </motion.div>
+
+      {/* Content Section */}
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.2 }}
+        className="flex flex-col w-full lg:w-1/2 p-6 md:p-10 -mt-6 lg:mt-0 bg-surface lg:bg-transparent rounded-t-[30px] lg:rounded-none z-10 relative"
+      >
+        <div className="flex flex-wrap gap-2 mb-4">
+          <span className="bg-primary/20 text-primary px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
+            {bodyParts[0]}
+          </span>
+          <span className="bg-gray-800 text-gray-300 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider border border-gray-700">
+            {equipments[0]}
+          </span>
+        </div>
+
+        <h1 className="text-3xl lg:text-5xl font-extrabold capitalize text-white mb-4 tracking-tight leading-tight">
           {name}
         </h1>
-        <p className="text-base lg:text-lg text-gray-600">
+
+        <p className="text-gray-400 text-base md:text-lg mb-8 leading-relaxed">
           Exercises keep you strong.{" "}
-          <span className="capitalize font-semibold">{name}</span> is one of the
+          <span className="capitalize text-white font-medium">{name}</span> is one of the
           best exercises to target your{" "}
-          <span className="font-semibold">{targetMuscles[0]}</span>. It will
+          <span className="text-white font-medium">{targetMuscles[0]}</span>. It will
           help you improve your mood and gain energy.
         </p>
 
-        {extraDetail.map((item) => (
-          <div key={item.name} className="flex flex-row items-center gap-6">
-            <div className="bg-[#FFF2DB] rounded-full w-20 h-20 flex items-center justify-center flex-shrink-0">
-              <img src={item.icon} alt={item.alt} className="w-11 h-11" />
-            </div>
-            <span className="capitalize text-lg lg:text-2xl text-gray-700">
-              {item.name}
-            </span>
-          </div>
-        ))}
+        {/* Feature Icons Row */}
+        <div className="grid grid-cols-3 gap-4 mb-8">
+          {extraDetail.map((item) => (
+            <motion.div
+              key={item.name}
+              whileHover={{ y: -5 }}
+              className="flex flex-col items-center bg-surface-light p-4 rounded-2xl border border-gray-800"
+            >
+              <div className="bg-gray-800 rounded-full w-12 h-12 flex items-center justify-center mb-3">
+                <img src={item.icon} alt={item.alt} className="w-6 h-6 invert opacity-80" />
+              </div>
+              <span className="capitalize text-xs md:text-sm font-semibold text-gray-300 text-center">
+                {item.name}
+              </span>
+            </motion.div>
+          ))}
+        </div>
 
-        {/* ✅ Interactive Instructions Section */}
-        <div className="mt-4">
-          <button
+        {/* Instructions Section */}
+        <div className="mt-auto">
+          <motion.button
+            whileTap={{ scale: 0.95 }}
             onClick={() => setShowInstructions(!showInstructions)}
-            className="bg-red-500 text-white font-bold py-2 px-6 rounded-md hover:bg-red-600 transition duration-300"
+            className="w-full bg-primary text-white font-bold py-4 px-6 rounded-xl shadow-lg shadow-primary/20 flex items-center justify-center gap-2 hover:bg-red-600 transition-colors"
           >
-            {showInstructions ? "Hide Instructions" : "Show Instructions"}
-          </button>
+            <PlayCircle className="w-5 h-5" />
+            {showInstructions ? "Hide Instructions" : "Step-by-Step Instructions"}
+          </motion.button>
 
           <AnimatePresence>
             {showInstructions && (
-              <motion.ol
-                className="list-decimal list-inside mt-4 space-y-2 text-gray-600"
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                exit={{ opacity: 0, height: 0 }}
+              <motion.div
+                initial={{ opacity: 0, height: 0, marginTop: 0 }}
+                animate={{ opacity: 1, height: "auto", marginTop: 24 }}
+                exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                className="overflow-hidden"
               >
-                {instructions.map((step, index) => (
-                  <li key={index}>{step}</li>
-                ))}
-              </motion.ol>
+                <div className="bg-surface-light rounded-2xl p-6 border border-gray-800">
+                  <ol className="space-y-4">
+                    {instructions.map((step, index) => (
+                      <li key={index} className="flex gap-4 text-gray-300">
+                        <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary/20 text-primary flex items-center justify-center text-sm font-bold mt-0.5">
+                          {index + 1}
+                        </span>
+                        <span className="leading-relaxed text-sm md:text-base">
+                          {step}
+                        </span>
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+              </motion.div>
             )}
           </AnimatePresence>
         </div>
       </motion.div>
-    </motion.div>
+    </div>
   );
 };
 
