@@ -1,6 +1,6 @@
 import React from "react";
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
-import Logo from "../assets/images/Logo-1.png"; // Use the lighter/white logo for dark theme
+import Logo from "../assets/images/Logo.png"; // Use the lighter/white logo for dark theme
 import { Search } from "lucide-react";
 
 const Navbar = () => {
