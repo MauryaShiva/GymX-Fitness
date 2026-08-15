@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import Fuse from "fuse.js";
 
@@ -17,9 +18,24 @@ const sectionVariants = {
 };
 
 const Home = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
   // ✅ State ab local data se initialize ho raha hai
   const [exercises, setExercises] = useState(allExercisesData);
   const [bodyPart, setBodyPart] = useState("all");
+
+  useEffect(() => {
+    // Check if we navigated here with the intention of opening search
+    const queryParams = new URLSearchParams(location.search);
+    if (queryParams.get("search") === "true") {
+      // Remove the query param without triggering a re-render
+      navigate("/", { replace: true });
+      // Small timeout to ensure components are mounted before dispatching
+      setTimeout(() => {
+        window.dispatchEvent(new Event("open-search"));
+      }, 100);
+    }
+  }, [location, navigate]);
 
   // Fuse.js setup for smart search
   const fuse = new Fuse(allExercisesData, {
@@ -55,7 +71,12 @@ const Home = () => {
   };
 
   return (
-    <div>
+    <motion.div
+      initial={{ opacity: 0, x: -20 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: 20 }}
+      transition={{ duration: 0.3 }}
+    >
       <HeroBanner />
 
       <motion.div
@@ -84,7 +105,7 @@ const Home = () => {
           bodyPart={bodyPart}
         />
       </motion.div>
-    </div>
+    </motion.div>
   );
 };
 
