@@ -1,1 +1,36 @@
 @import "tailwindcss";
+
+@theme {
+  --color-background: #0f172a; /* slate-900 */
+  --color-surface: #1e293b; /* slate-800 */
+  --color-primary: #ef4444; /* red-500 */
+  --color-text-primary: #f8fafc; /* slate-50 */
+  --color-text-secondary: #94a3b8; /* slate-400 */
+}
+
+@utility pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 20px);
+}
+
+@utility pt-safe-top {
+  padding-top: env(safe-area-inset-top, 20px);
+}
+
+@utility mt-safe-top {
+  margin-top: env(safe-area-inset-top, 20px);
+}
+
+/* Hide scrollbar for clean app-like UI */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-text-primary);
+  -webkit-tap-highlight-color: transparent; /* Remove blue tap highlight on mobile */
+}
