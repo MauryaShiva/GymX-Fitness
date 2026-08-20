@@ -1,1 +1,32 @@
 @import "tailwindcss";
+
+@theme {
+  --color-background: #121212;
+  --color-surface: #1E1E1E;
+  --color-primary: #EF4444; /* Tailwind Red 500 */
+  --color-text-primary: #FFFFFF;
+  --color-text-secondary: #9CA3AF; /* Tailwind Gray 400 */
+}
+
+@utility pb-safe {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+@utility pt-safe-top {
+  padding-top: env(safe-area-inset-top);
+}
+
+@utility mt-safe-top {
+  margin-top: env(safe-area-inset-top);
+}
+
+html, body {
+  background-color: var(--color-background);
+  color: var(--color-text-primary);
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
