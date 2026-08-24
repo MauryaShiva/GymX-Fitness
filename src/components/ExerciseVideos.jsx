@@ -1,20 +1,21 @@
-import React, { useState } from "react"; // 1. Import useState
+import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { PlayCircleOutline, Close } from "@mui/icons-material";
+import Loader from "./Loader.jsx";
 
 // ✅ New component for the embedded video player modal
 const VideoPlayerModal = ({ videoId, onClose }) => {
   return (
     <motion.div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4 backdrop-blur-sm"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
     >
-      <div className="relative bg-surface rounded-lg shadow-2xl w-full max-w-3xl aspect-video">
+      <div className="relative bg-surface rounded-2xl shadow-2xl w-full max-w-4xl aspect-video border border-gray-800">
         <button
           onClick={onClose}
-          className="absolute -top-3 -right-3 z-10 bg-white rounded-full p-1 text-background hover:bg-gray-200"
+          className="absolute -top-4 -right-4 z-10 bg-surface rounded-full p-2 text-text-primary hover:text-primary shadow-lg border border-gray-700 transition-colors"
           aria-label="Close video player"
         >
           <Close />
@@ -27,7 +28,7 @@ const VideoPlayerModal = ({ videoId, onClose }) => {
           frameBorder="0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen
-          className="rounded-lg"
+          className="rounded-2xl"
         ></iframe>
       </div>
     </motion.div>
@@ -35,22 +36,18 @@ const VideoPlayerModal = ({ videoId, onClose }) => {
 };
 
 const ExerciseVideos = ({ exerciseVideos, name }) => {
-  // ✅ 2. State to keep track of the video to play
   const [selectedVideoId, setSelectedVideoId] = useState(null);
 
   if (!exerciseVideos || exerciseVideos.length === 0) {
     return (
       <div className="mt-12 lg:mt-24 px-5 text-center">
-        <h2 className="text-2xl sm:text-3xl font-bold text-text-secondary">
-          Loading videos...
-        </h2>
+        <Loader />
       </div>
     );
   }
 
   return (
     <>
-      {/* ✅ 3. AnimatePresence allows the modal to have an exit animation */}
       <AnimatePresence>
         {selectedVideoId && (
           <VideoPlayerModal
@@ -60,52 +57,49 @@ const ExerciseVideos = ({ exerciseVideos, name }) => {
         )}
       </AnimatePresence>
 
-      <motion.section
-        className="mt-12 lg:mt-24 px-5"
-        initial={{ opacity: 0, y: 50 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.2 }}
-        transition={{ duration: 0.6 }}
-      >
-        <h2 className="text-3xl lg:text-4xl font-bold text-center mb-12 text-text-primary">
-          Watch <span className="text-primary capitalize">{name}</span> Exercise
-          Videos
+      <div id="exercise-videos" className="w-full mt-4 md:mt-8 p-4">
+        <h2 className="text-3xl lg:text-4xl font-bold mb-8 text-text-primary">
+          Watch <span className="text-primary capitalize">{name}</span> exercise
+          videos
         </h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10 justify-items-center">
+        <div className="flex flex-col lg:flex-row flex-wrap justify-start items-center lg:items-start gap-8 lg:gap-12 w-full">
           {exerciseVideos.slice(0, 3).map((item, index) => (
-            // ✅ 4. Changed the <a> tag to a <button> to trigger the modal
-            <button
+            <motion.button
               key={index}
               onClick={() => setSelectedVideoId(item.video.videoId)}
-              className="group block w-full max-w-sm bg-surface rounded-lg shadow-lg overflow-hidden transition-transform duration-300 hover:scale-105 hover:shadow-primary/20 text-left"
+              className="flex flex-col w-full max-w-[350px] gap-4 group text-left focus:outline-none"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
             >
-              <div className="relative">
+              <div className="relative rounded-2xl overflow-hidden aspect-video bg-surface shadow-lg">
                 <img
                   src={item.video.thumbnails[0].url}
                   alt={item.video.title}
                   loading="lazy"
-                  className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-110"
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <PlayCircleOutline sx={{ fontSize: 60, color: "white" }} />
+                <div className="absolute inset-0 bg-black/30 flex items-center justify-center transition-opacity duration-300">
+                   <div className="w-16 h-16 bg-primary/80 rounded-full flex items-center justify-center transform scale-90 opacity-0 group-hover:scale-100 group-hover:opacity-100 transition-all duration-300">
+                     <PlayCircleOutline sx={{ fontSize: 40, color: "#121212" }} />
+                   </div>
                 </div>
               </div>
-              <div className="p-4">
+              <div className="flex flex-col gap-1 px-2">
                 <h3
-                  className="text-base font-bold text-text-primary truncate"
+                  className="text-lg lg:text-xl font-semibold text-text-primary line-clamp-2 leading-tight"
                   title={item.video.title}
                 >
                   {item.video.title}
                 </h3>
-                <p className="text-sm text-text-secondary mt-1">
+                <p className="text-sm text-text-secondary">
                   {item.video.channelName}
                 </p>
               </div>
-            </button>
+            </motion.button>
           ))}
         </div>
-      </motion.section>
+      </div>
     </>
   );
 };
