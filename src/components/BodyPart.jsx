@@ -1,53 +1,34 @@
 import React from "react";
-import { motion } from "framer-motion";
 import Icon from "../assets/icons/gym.png";
+import { motion } from "framer-motion";
 
-const BodyPart = ({ item, bodyPart, setBodyPart }) => {
-  const isSelected = bodyPart === item;
-
+const BodyPart = ({ item, setBodyPart, bodyPart }) => {
   return (
-    <motion.div
-      className={`
-        group w-52 h-56 flex flex-col rounded-xl cursor-pointer bg-white 
-        shadow-lg border-b-8 transform transition-all duration-300
-        hover:scale-105 hover:-translate-y-2
-        ${
-          isSelected ? "border-red-500" : "border-gray-200 hover:border-red-200"
-        }
-      `}
+    <motion.button
+      type="button"
+      className={`flex flex-col items-center justify-center bg-surface w-64 h-64 cursor-pointer gap-10 rounded-3xl shadow-lg border-b-4 transition-colors ${
+        bodyPart === item ? "border-primary bg-surface" : "border-transparent"
+      }`}
       onClick={() => {
         setBodyPart(item);
-
-        // ✅ The updated dynamic scroll logic
-        // This finds the results section and scrolls to it.
-        const exercisesSection = document.getElementById("exercises");
-        if (exercisesSection) {
-          exercisesSection.scrollIntoView({ behavior: "smooth" });
-        }
+        document
+          .getElementById("exercises")
+          ?.scrollIntoView({ behavior: "smooth" });
       }}
-      whileTap={{ scale: 0.98 }}
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
     >
-      <div className="flex flex-col items-center justify-center h-full gap-5 p-4">
+      <div className="bg-primary/10 p-6 rounded-full">
         <img
           src={Icon}
-          alt={`${item} icon`}
-          className="w-12 h-12 transition-transform duration-300 group-hover:scale-110"
+          alt="dumbbell"
+          className="w-12 h-12 filter brightness-200"
         />
-        <span
-          className={`
-            text-2xl font-semibold capitalize tracking-wide
-            transition-colors duration-300
-            ${
-              isSelected
-                ? "text-red-500"
-                : "text-zinc-800 group-hover:text-red-500"
-            }
-          `}
-        >
-          {item}
-        </span>
       </div>
-    </motion.div>
+      <span className="text-2xl font-bold text-text-primary capitalize tracking-wide">
+        {item}
+      </span>
+    </motion.button>
   );
 };
 

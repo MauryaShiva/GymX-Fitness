@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowForward } from "@mui/icons-material";
+import { Play } from "lucide-react";
 
-// ✅ 1. Using your exact local image imports as provided.
+// Using exact local image imports
 import myHeroImage from "../assets/images/my-gym-background.jpg";
 import image1 from "../assets/images/my-gym-background1.jpg";
 import image2 from "../assets/images/my-gym-background2.jpg";
@@ -13,7 +13,6 @@ import image6 from "../assets/images/my-gym-background6.jpg";
 import image7 from "../assets/images/my-gym-background7.jpg";
 import image8 from "../assets/images/my-gym-background8.jpg";
 
-// ✅ 2. Using your image array.
 const allImages = [
   myHeroImage,
   image1,
@@ -29,70 +28,73 @@ const allImages = [
 const HeroBanner = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-  // This effect will cycle through the images every 5 seconds
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentImageIndex((prevIndex) => (prevIndex + 1) % allImages.length);
-    }, 5000); // Change image every 5 seconds
-
-    return () => clearInterval(timer); // Cleanup on component unmount
+    }, 5000);
+    return () => clearInterval(timer);
   }, []);
 
   return (
-    <section className="relative w-full min-h-screen flex items-center justify-center text-center p-6 overflow-hidden">
-      {/* Image Slider with improved "Ken Burns" animation */}
-      <AnimatePresence>
+    <section className="relative w-full h-[100svh] min-h-[600px] flex items-center justify-center text-center overflow-hidden">
+      <AnimatePresence mode="popLayout">
         <motion.img
           key={currentImageIndex}
           src={allImages[currentImageIndex]}
-          // ✅ 3. Applied the smoother "Ken Burns" animation effect
-          initial={{ opacity: 0, scale: 1.2 }} // Start slightly zoomed in and faded out
+          initial={{ opacity: 0, scale: 1.1 }}
           animate={{
             opacity: 1,
-            scale: 1, // Animate to normal scale
-            transition: { duration: 2, ease: [0.43, 0.13, 0.23, 0.96] }, // Slower, smoother fade-in
+            scale: 1,
+            transition: { duration: 1.5, ease: "easeOut" },
           }}
           exit={{
             opacity: 0,
-            scale: 1.1, // Zoom out slightly on exit
-            transition: { duration: 1.5, ease: [0.43, 0.13, 0.23, 0.96] }, // Smooth fade-out
+            scale: 1.05,
+            transition: { duration: 1.5, ease: "easeIn" },
           }}
-          className="absolute inset-0 w-full h-full object-cover"
+          className="absolute inset-0 w-full h-full object-cover mix-blend-overlay opacity-40"
         />
       </AnimatePresence>
 
-      {/* Overlay remains the same */}
-      <div className="absolute inset-0 bg-black/70"></div>
+      <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/60 to-background z-0"></div>
 
-      {/* All your text and button content remains the same */}
       <motion.div
-        className="relative z-10 flex flex-col items-center"
+        className="relative z-10 flex flex-col items-center px-4 w-full max-w-4xl pt-safe-top"
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
+        transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
       >
-        <p className="font-semibold text-white text-lg md:text-xl mb-2 drop-shadow-xl">
-          Your Fitness Journey Starts Here
-        </p>
-        <h1 className="my-4 font-extrabold text-5xl md:text-7xl lg:text-8xl text-white leading-tight drop-shadow-2xl">
-          Train Hard <br /> Stay Consistent
+        <h2 className="text-primary font-bold text-lg md:text-2xl tracking-widest uppercase mb-4 md:mb-6 flex items-center gap-2">
+           <span className="w-8 md:w-12 h-[2px] bg-primary"></span>
+           Fitness Club
+           <span className="w-8 md:w-12 h-[2px] bg-primary"></span>
+        </h2>
+
+        <h1 className="font-extrabold text-5xl sm:text-6xl md:text-7xl lg:text-8xl text-text-primary leading-[1.1] drop-shadow-2xl mb-6 tracking-tight">
+          Sweat, Smile <br className="hidden sm:block" />
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-teal-400">
+            And Repeat
+          </span>
         </h1>
-        <p className="mb-10 text-lg text-white max-w-2xl drop-shadow-xl">
-          Build the best version of you. Unlock your potential with personalized
-          workouts and expert guidance.
+
+        <p className="mb-10 text-lg md:text-xl text-text-secondary max-w-2xl leading-relaxed">
+          Build the best version of you. Check out the most effective exercises personalized to your goals.
         </p>
-        <motion.a
-          href="#exercises"
-          whileHover={{
-            scale: 1.05,
-            boxShadow: "0px 0px 30px rgba(59, 130, 246, 0.6)",
-          }}
+
+        <motion.button
+          whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          className="inline-flex items-center gap-3 px-10 py-5 bg-gradient-to-r from-blue-600 to-blue-400 text-white font-bold text-xl rounded-full shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+          onClick={() => {
+            const exercisesSection = document.getElementById("exercises");
+            if (exercisesSection) {
+              exercisesSection.scrollIntoView({ behavior: "smooth" });
+            }
+          }}
+          className="group flex items-center gap-3 bg-primary text-background font-bold text-lg md:text-xl py-4 px-8 md:px-10 rounded-full shadow-[0_0_20px_rgba(3,218,198,0.3)] hover:shadow-[0_0_30px_rgba(3,218,198,0.5)] transition-all duration-300"
         >
-          Explore Workouts
-          <ArrowForward />
-        </motion.a>
+          Explore Exercises
+          <Play className="w-5 h-5 fill-current transform group-hover:translate-x-1 transition-transform" />
+        </motion.button>
       </motion.div>
     </section>
   );
