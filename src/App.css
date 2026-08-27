@@ -1,1 +1,47 @@
 @import "tailwindcss";
+
+@theme {
+  --color-background: #0a0a0a;
+  --color-surface: #171717;
+  --color-surface-hover: #262626;
+  --color-primary: #ef4444; /* Tailwind red-500 */
+  --color-primary-hover: #dc2626; /* Tailwind red-600 */
+  --color-text-primary: #f8fafc;
+  --color-text-secondary: #94a3b8;
+  --color-text-muted: #64748b;
+  --color-border: #334155;
+  --color-glass: rgba(23, 23, 23, 0.7);
+
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+}
+
+@utility pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 20px);
+}
+
+@utility pt-safe-top {
+  padding-top: env(safe-area-inset-top, 20px);
+}
+
+@utility mt-safe-top {
+  margin-top: env(safe-area-inset-top, 20px);
+}
+
+/* Base styles for a dark theme */
+body {
+  background-color: var(--color-background);
+  color: var(--color-text-primary);
+  /* Prevent scrolling overscroll on mobile for a native feel */
+  overscroll-behavior-y: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Hide scrollbar for the horizontal scroll lists for cleaner UI */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.hide-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
