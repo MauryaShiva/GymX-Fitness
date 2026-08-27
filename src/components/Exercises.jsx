@@ -18,9 +18,9 @@ const CustomPagination = ({
   const pageNumbers = [];
   for (let i = startPage; i <= endPage; i++) pageNumbers.push(i);
 
-  const baseBtn = "w-10 h-10 rounded-md transition-colors duration-200";
-  const active = "bg-primary text-background font-bold";
-  const idle = "bg-surface text-text-secondary hover:bg-gray-700";
+  const baseBtn = "w-10 h-10 rounded-md transition-colors duration-200 text-sm md:text-base";
+  const active = "bg-primary text-white font-bold shadow-lg shadow-primary/20";
+  const idle = "bg-surface text-text-secondary hover:bg-surface-hover hover:text-text-primary border border-border";
 
   return (
     <nav aria-label="Pagination">
@@ -30,7 +30,7 @@ const CustomPagination = ({
           <li>
             <button
               onClick={() => paginate(currentPage - 1)}
-              className="px-3 h-10 rounded-md bg-surface hover:bg-gray-700"
+              className="px-3 md:px-4 h-10 rounded-md bg-surface text-text-secondary hover:bg-surface-hover hover:text-text-primary border border-border transition-colors duration-200 text-sm md:text-base"
             >
               Prev
             </button>
@@ -48,7 +48,7 @@ const CustomPagination = ({
                 1
               </button>
             </li>
-            <li className="px-2 select-none">…</li>
+            <li className="px-2 select-none text-text-muted">…</li>
           </>
         )}
 
@@ -67,7 +67,7 @@ const CustomPagination = ({
         {/* Ellipsis + Last */}
         {endPage < totalPages && (
           <>
-            <li className="px-2 select-none">…</li>
+            <li className="px-2 select-none text-text-muted">…</li>
             <li>
               <button
                 onClick={() => paginate(totalPages)}
@@ -86,7 +86,7 @@ const CustomPagination = ({
           <li>
             <button
               onClick={() => paginate(currentPage + 1)}
-              className="px-3 h-10 rounded-md bg-surface hover:bg-gray-700"
+              className="px-3 md:px-4 h-10 rounded-md bg-surface text-text-secondary hover:bg-surface-hover hover:text-text-primary border border-border transition-colors duration-200 text-sm md:text-base"
             >
               Next
             </button>
@@ -97,18 +97,14 @@ const CustomPagination = ({
   );
 };
 
-// ✅ UPDATED Exercises component
 const Exercises = ({ exercises, bodyPart }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const exercisesPerPage = 9;
 
-  // ✅ UPDATED: useEffect now only resets pagination when the filtered list changes.
-  // It no longer performs the filtering itself.
   useEffect(() => {
     setCurrentPage(1);
   }, [exercises]);
 
-  // Pagination slice logic remains the same
   const indexOfLastExercise = currentPage * exercisesPerPage;
   const indexOfFirstExercise = indexOfLastExercise - exercisesPerPage;
   const currentExercises = exercises.slice(
@@ -138,18 +134,19 @@ const Exercises = ({ exercises, bodyPart }) => {
   }
 
   return (
-    <section id="exercises" className="mt-12 p-5">
-      <h2 className="text-3xl lg:text-4xl font-bold mb-8 text-text-primary capitalize">
+    <section id="exercises" className="mt-8 md:mt-12 p-5">
+      <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-6 md:mb-8 text-text-primary capitalize">
         Showing Results for: <span className="text-primary">{bodyPart}</span>
       </h2>
 
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         <motion.div
-          key={bodyPart}
+          key={bodyPart + currentPage}
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12 min-h-[500px]"
+          exit="hidden"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 lg:gap-12 min-h-[500px]"
         >
           {currentExercises.length ? (
             currentExercises.map((exercise) => (
@@ -158,14 +155,14 @@ const Exercises = ({ exercises, bodyPart }) => {
               </motion.div>
             ))
           ) : (
-            <p className="text-text-secondary col-span-3 text-center self-center">
+            <p className="text-text-secondary col-span-1 sm:col-span-2 lg:col-span-3 text-center self-center text-lg">
               No exercises found for this category.
             </p>
           )}
         </motion.div>
       </AnimatePresence>
 
-      <div className="mt-16 lg:mt-24 flex justify-center">
+      <div className="mt-12 md:mt-16 lg:mt-24 flex justify-center">
         {exercises.length > exercisesPerPage && (
           <CustomPagination
             exercisesPerPage={exercisesPerPage}
