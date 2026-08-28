@@ -38,69 +38,86 @@ const Detail = ({ exerciseDetail }) => {
   };
 
   return (
-    // ✅ Wrap the main container in a motion.div for entry animation
     <motion.div
-      className="flex flex-col lg:flex-row p-5 items-center gap-10"
+      className="flex flex-col lg:flex-row p-0 md:p-5 items-center gap-10"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
     >
-      <motion.img
-        variants={itemVariants}
-        src={gifUrl}
-        alt={name}
-        loading="lazy"
-        className="w-full max-w-md lg:max-w-lg shadow-lg rounded-lg"
-      />
-
-      {/* ✅ Animate the text content as well */}
       <motion.div
         variants={itemVariants}
-        className="flex flex-col gap-5 lg:gap-6 w-full"
+        className="w-full lg:w-1/2 flex justify-center bg-surface/30 md:bg-transparent rounded-b-3xl md:rounded-3xl p-4 md:p-0 shadow-xl"
       >
-        <h1 className="text-3xl lg:text-5xl font-bold capitalize text-gray-800">
+        <img
+          src={gifUrl}
+          alt={name}
+          loading="lazy"
+          className="w-full max-w-sm md:max-w-md lg:max-w-lg rounded-2xl object-cover mix-blend-screen"
+          style={{ filter: 'drop-shadow(0 0 20px rgba(239, 68, 68, 0.2))' }}
+        />
+      </motion.div>
+
+      <motion.div
+        variants={itemVariants}
+        className="flex flex-col gap-6 lg:gap-8 w-full px-4 md:px-0"
+      >
+        <h1 className="text-4xl lg:text-6xl font-extrabold capitalize text-text-primary tracking-tight">
           {name}
         </h1>
-        <p className="text-base lg:text-lg text-gray-600">
+        <p className="text-lg text-text-secondary leading-relaxed">
           Exercises keep you strong.{" "}
-          <span className="capitalize font-semibold">{name}</span> is one of the
+          <span className="capitalize font-semibold text-text-primary">{name}</span> is one of the
           best exercises to target your{" "}
-          <span className="font-semibold">{targetMuscles[0]}</span>. It will
+          <span className="font-semibold text-primary">{targetMuscles[0]}</span>. It will
           help you improve your mood and gain energy.
         </p>
 
-        {extraDetail.map((item) => (
-          <div key={item.name} className="flex flex-row items-center gap-6">
-            <div className="bg-[#FFF2DB] rounded-full w-20 h-20 flex items-center justify-center flex-shrink-0">
-              <img src={item.icon} alt={item.alt} className="w-11 h-11" />
-            </div>
-            <span className="capitalize text-lg lg:text-2xl text-gray-700">
-              {item.name}
-            </span>
-          </div>
-        ))}
+        <div className="flex flex-col gap-4">
+          {extraDetail.map((item) => (
+            <motion.div
+              key={item.name}
+              className="flex flex-row items-center gap-6 bg-surface/50 p-4 rounded-2xl border border-gray-800"
+              whileHover={{ scale: 1.02, x: 5 }}
+            >
+              <div className="bg-primary/10 rounded-full w-16 h-16 flex items-center justify-center flex-shrink-0">
+                <img src={item.icon} alt={item.alt} className="w-8 h-8 filter brightness-0 invert" />
+              </div>
+              <span className="capitalize text-xl font-medium text-text-primary">
+                {item.name}
+              </span>
+            </motion.div>
+          ))}
+        </div>
 
-        {/* ✅ Interactive Instructions Section */}
-        <div className="mt-4">
-          <button
+        <div className="mt-6">
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
             onClick={() => setShowInstructions(!showInstructions)}
-            className="bg-red-500 text-white font-bold py-2 px-6 rounded-md hover:bg-red-600 transition duration-300"
+            className="w-full md:w-auto bg-gradient-to-r from-red-600 to-red-800 text-white font-bold py-4 px-8 rounded-full shadow-lg shadow-red-500/20 text-lg sticky bottom-24 md:static z-10"
           >
             {showInstructions ? "Hide Instructions" : "Show Instructions"}
-          </button>
+          </motion.button>
 
           <AnimatePresence>
             {showInstructions && (
-              <motion.ol
-                className="list-decimal list-inside mt-4 space-y-2 text-gray-600"
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                exit={{ opacity: 0, height: 0 }}
+              <motion.div
+                initial={{ opacity: 0, height: 0, marginTop: 0 }}
+                animate={{ opacity: 1, height: "auto", marginTop: 24 }}
+                exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                className="overflow-hidden"
               >
-                {instructions.map((step, index) => (
-                  <li key={index}>{step}</li>
-                ))}
-              </motion.ol>
+                <div className="bg-surface/50 border border-gray-800 rounded-2xl p-6 md:p-8">
+                  <h3 className="text-xl font-bold mb-4 text-primary">Instructions</h3>
+                  <ol className="list-decimal list-inside space-y-4 text-text-secondary">
+                    {instructions.map((step, index) => (
+                      <li key={index} className="leading-relaxed pl-2">
+                        <span className="text-text-primary">{step}</span>
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+              </motion.div>
             )}
           </AnimatePresence>
         </div>
