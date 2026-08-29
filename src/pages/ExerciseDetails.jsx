@@ -72,25 +72,21 @@ const ExerciseDetails = () => {
   // --- Logic mein koi badlav nahi ---
 
   return (
-    // ✅ New UI: A clean, high-contrast light theme for better readability.
+    // ✅ New UI: A clean dark theme for better readability and native app feel.
     <motion.main
-      className="bg-gray-50 text-gray-900 min-h-screen px-4 sm:px-6 lg:px-8"
+      className="bg-background text-text-primary min-h-screen px-0 sm:px-6 lg:px-8"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: "easeInOut" }}
     >
-      <div className="max-w-7xl mx-auto py-12 md:py-20">
-        {/*
-          NOTE: For the best look, the <Detail /> component should be updated
-          to use this new light theme with teal accents.
-        */}
+      <div className="max-w-7xl mx-auto md:py-12 lg:py-20">
         <section className="mb-20">
           <Detail exerciseDetail={exerciseDetail} />
         </section>
 
-        {/* ✅ Stylized Divider: Updated for the light theme. */}
-        <div className="w-full flex justify-center my-20">
-          <div className="w-1/3 h-px bg-gray-200"></div>
+        {/* ✅ Stylized Divider: Updated for the dark theme. */}
+        <div className="w-full flex justify-center my-10 md:my-20">
+          <div className="w-1/3 h-px bg-gray-800"></div>
         </div>
 
         {/*
