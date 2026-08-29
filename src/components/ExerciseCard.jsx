@@ -1,12 +1,17 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+
+const MotionLink = motion.create(Link);
 
 const ExerciseCard = ({ exercise }) => {
   return (
     // ✅ Main container: Dark theme, rounded corners, and a "group" class for hover effects
-    <Link
+    <MotionLink
       to={`/exercise/${exercise.exerciseId}`}
-      className="relative w-[350px] h-[450px] bg-gray-800 rounded-xl overflow-hidden shadow-lg group transition-all duration-300 ease-in-out hover:shadow-2xl hover:shadow-red-500/20 transform hover:-translate-y-2"
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
+      className="relative w-[350px] h-[450px] bg-surface border border-gray-800 rounded-2xl overflow-hidden shadow-xl group transition-all duration-300 ease-in-out hover:shadow-2xl hover:shadow-primary/20"
     >
       {/* ✅ Image with a subtle zoom effect on hover */}
       <img
@@ -20,13 +25,13 @@ const ExerciseCard = ({ exercise }) => {
       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
 
       {/* ✅ Container for all the text content, positioned at the bottom */}
-      <div className="absolute bottom-0 left-0 right-0 p-5 text-white">
+      <div className="absolute bottom-0 left-0 right-0 p-5 text-text-primary">
         {/* ✅ Tags with a modern, semi-transparent background */}
         <div className="flex flex-row gap-2 mb-3">
-          <span className="bg-red-500/80 text-white text-xs font-semibold rounded-full capitalize py-1 px-3 backdrop-blur-sm">
+          <span className="bg-primary/80 text-background text-xs font-semibold rounded-full capitalize py-1 px-3 backdrop-blur-sm">
             {exercise.bodyParts[0]}
           </span>
-          <span className="bg-yellow-500/80 text-white text-xs font-semibold rounded-full capitalize py-1 px-3 backdrop-blur-sm">
+          <span className="bg-secondary/80 text-text-primary text-xs font-semibold rounded-full capitalize py-1 px-3 backdrop-blur-sm">
             {exercise.targetMuscles[0]}
           </span>
         </div>
@@ -36,7 +41,7 @@ const ExerciseCard = ({ exercise }) => {
           {exercise.name}
         </h3>
       </div>
-    </Link>
+    </MotionLink>
   );
 };
 
