@@ -38,67 +38,74 @@ const Detail = ({ exerciseDetail }) => {
   };
 
   return (
-    // ✅ Wrap the main container in a motion.div for entry animation
     <motion.div
-      className="flex flex-col lg:flex-row p-5 items-center gap-10"
+      className="flex flex-col lg:flex-row items-center gap-10 md:p-5"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
     >
-      <motion.img
-        variants={itemVariants}
-        src={gifUrl}
-        alt={name}
-        loading="lazy"
-        className="w-full max-w-md lg:max-w-lg shadow-lg rounded-lg"
-      />
-
-      {/* ✅ Animate the text content as well */}
       <motion.div
         variants={itemVariants}
-        className="flex flex-col gap-5 lg:gap-6 w-full"
+        className="w-full lg:max-w-xl bg-surface md:rounded-3xl overflow-hidden shadow-2xl relative"
       >
-        <h1 className="text-3xl lg:text-5xl font-bold capitalize text-gray-800">
+        <div className="absolute inset-0 bg-gradient-to-t from-surface via-transparent to-transparent z-10" />
+        <img
+          src={gifUrl}
+          alt={name}
+          loading="lazy"
+          className="w-full object-cover mix-blend-screen"
+        />
+      </motion.div>
+
+      <motion.div
+        variants={itemVariants}
+        className="flex flex-col gap-6 lg:gap-8 w-full px-5 md:px-0"
+      >
+        <h1 className="text-4xl lg:text-6xl font-extrabold capitalize text-white tracking-tight">
           {name}
         </h1>
-        <p className="text-base lg:text-lg text-gray-600">
+        <p className="text-lg lg:text-xl text-gray-400 leading-relaxed max-w-2xl">
           Exercises keep you strong.{" "}
-          <span className="capitalize font-semibold">{name}</span> is one of the
+          <span className="capitalize font-bold text-white">{name}</span> is one of the
           best exercises to target your{" "}
-          <span className="font-semibold">{targetMuscles[0]}</span>. It will
+          <span className="font-bold text-white">{targetMuscles[0]}</span>. It will
           help you improve your mood and gain energy.
         </p>
 
-        {extraDetail.map((item) => (
-          <div key={item.name} className="flex flex-row items-center gap-6">
-            <div className="bg-[#FFF2DB] rounded-full w-20 h-20 flex items-center justify-center flex-shrink-0">
-              <img src={item.icon} alt={item.alt} className="w-11 h-11" />
+        <div className="flex flex-wrap gap-4 mt-2">
+          {extraDetail.map((item) => (
+            <div key={item.name} className="flex items-center gap-4 bg-gray-900/50 border border-gray-800 rounded-2xl p-4 pr-6">
+              <div className="bg-primary/20 rounded-xl w-14 h-14 flex items-center justify-center flex-shrink-0">
+                <img src={item.icon} alt={item.alt} className="w-7 h-7 invert" />
+              </div>
+              <span className="capitalize text-lg font-semibold text-gray-200">
+                {item.name}
+              </span>
             </div>
-            <span className="capitalize text-lg lg:text-2xl text-gray-700">
-              {item.name}
-            </span>
-          </div>
-        ))}
+          ))}
+        </div>
 
-        {/* ✅ Interactive Instructions Section */}
-        <div className="mt-4">
-          <button
-            onClick={() => setShowInstructions(!showInstructions)}
-            className="bg-red-500 text-white font-bold py-2 px-6 rounded-md hover:bg-red-600 transition duration-300"
-          >
-            {showInstructions ? "Hide Instructions" : "Show Instructions"}
-          </button>
+        {/* ✅ Interactive Instructions Section with Sticky Button Mobile */}
+        <div className="mt-6 md:mt-8">
+          <div className="sticky bottom-20 md:static z-40 bg-background/80 md:bg-transparent backdrop-blur-md md:backdrop-blur-none p-4 md:p-0 -mx-5 md:mx-0 border-t border-gray-800 md:border-0 pb-safe md:pb-0">
+            <button
+              onClick={() => setShowInstructions(!showInstructions)}
+              className="w-full md:w-auto bg-primary text-white font-bold py-4 px-8 rounded-xl shadow-lg shadow-red-500/20 active:scale-95 transition-all text-lg"
+            >
+              {showInstructions ? "Hide Instructions" : "Read Instructions"}
+            </button>
+          </div>
 
           <AnimatePresence>
             {showInstructions && (
               <motion.ol
-                className="list-decimal list-inside mt-4 space-y-2 text-gray-600"
+                className="list-decimal list-outside ml-5 mt-8 space-y-4 text-gray-300 text-lg"
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: "auto" }}
                 exit={{ opacity: 0, height: 0 }}
               >
                 {instructions.map((step, index) => (
-                  <li key={index}>{step}</li>
+                  <li key={index} className="pl-2 marker:text-primary marker:font-bold">{step}</li>
                 ))}
               </motion.ol>
             )}
