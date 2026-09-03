@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import Fuse from "fuse.js";
 
-import allExercisesData from "../data/exercises.json"; // Local data import
+import allExercisesData from "../data/exercises.json";
 import HeroBanner from "../components/HeroBanner.jsx";
 import SearchExercises from "../components/SearchExercises.jsx";
 import Exercises from "../components/Exercises.jsx";
@@ -17,9 +18,22 @@ const sectionVariants = {
 };
 
 const Home = () => {
-  // ✅ State ab local data se initialize ho raha hai
   const [exercises, setExercises] = useState(allExercisesData);
   const [bodyPart, setBodyPart] = useState("all");
+
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  // Intercept ?search=true and dispatch open-search
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    if (searchParams.get("search") === "true") {
+      window.dispatchEvent(new Event("open-search"));
+
+      // Clean up the URL without triggering a re-render
+      navigate("/", { replace: true });
+    }
+  }, [location, navigate]);
 
   // Fuse.js setup for smart search
   const fuse = new Fuse(allExercisesData, {
@@ -27,7 +41,6 @@ const Home = () => {
     threshold: 0.4,
   });
 
-  // ✅ Filtering aur searching ka saara logic ab yahan hai
   const handleSearch = (searchTerm) => {
     if (searchTerm === "") {
       setExercises(allExercisesData);
@@ -65,7 +78,6 @@ const Home = () => {
         viewport={{ once: true, amount: 0.2 }}
       >
         <SearchExercises
-          // ✅ Naye functions ko as a prop pass karein
           onSearch={handleSearch}
           bodyPart={bodyPart}
           setBodyPart={handleBodyPartChange}
@@ -79,7 +91,6 @@ const Home = () => {
         viewport={{ once: true, amount: 0.2 }}
       >
         <Exercises
-          // ✅ Sirf zaroori props pass karein
           exercises={exercises}
           bodyPart={bodyPart}
         />
