@@ -1,1 +1,32 @@
 @import "tailwindcss";
+
+@theme {
+  --color-background: #0f172a;
+  --color-surface: #1e293b;
+  --color-primary: #ef4444;
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #94a3b8;
+}
+
+@utility pb-safe {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+@utility pt-safe-top {
+  padding-top: env(safe-area-inset-top);
+}
+
+@utility mt-safe-top {
+  margin-top: env(safe-area-inset-top);
+}
+
+@utility min-h-screen-safe {
+  min-height: calc(100vh - env(safe-area-inset-bottom) - env(safe-area-inset-top));
+}
+
+html, body {
+  -webkit-tap-highlight-color: transparent;
+  background-color: var(--color-background);
+  color: var(--color-text-primary);
+  overscroll-behavior-y: none;
+}
