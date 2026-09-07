@@ -40,23 +40,26 @@ const Detail = ({ exerciseDetail }) => {
   return (
     // ✅ Wrap the main container in a motion.div for entry animation
     <motion.div
-      className="flex flex-col lg:flex-row p-5 items-center gap-10"
+      className="flex flex-col lg:flex-row pb-5 md:p-5 items-center gap-6 md:gap-10 relative"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
     >
-      <motion.img
-        variants={itemVariants}
-        src={gifUrl}
-        alt={name}
-        loading="lazy"
-        className="w-full max-w-md lg:max-w-lg shadow-lg rounded-lg"
-      />
+      <motion.div className="w-full relative" variants={itemVariants}>
+        <img
+          src={gifUrl}
+          alt={name}
+          loading="lazy"
+          className="w-full h-[300px] sm:h-[400px] md:h-auto md:max-w-md lg:max-w-lg object-cover shadow-lg md:rounded-lg -mt-4 md:mt-0"
+        />
+        {/* Gradient overlay for mobile back button visibility if needed */}
+        <div className="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-black/20 to-transparent md:hidden" />
+      </motion.div>
 
       {/* ✅ Animate the text content as well */}
       <motion.div
         variants={itemVariants}
-        className="flex flex-col gap-5 lg:gap-6 w-full"
+        className="flex flex-col gap-4 md:gap-6 w-full px-4 md:px-0"
       >
         <h1 className="text-3xl lg:text-5xl font-bold capitalize text-gray-800">
           {name}
@@ -69,38 +72,44 @@ const Detail = ({ exerciseDetail }) => {
           help you improve your mood and gain energy.
         </p>
 
-        {extraDetail.map((item) => (
-          <div key={item.name} className="flex flex-row items-center gap-6">
-            <div className="bg-[#FFF2DB] rounded-full w-20 h-20 flex items-center justify-center flex-shrink-0">
-              <img src={item.icon} alt={item.alt} className="w-11 h-11" />
+        <div className="flex flex-col gap-4">
+          {extraDetail.map((item) => (
+            <div key={item.name} className="flex flex-row items-center gap-4 md:gap-6 bg-white p-3 md:p-0 rounded-xl shadow-sm md:shadow-none border border-gray-100 md:border-none">
+              <div className="bg-[#FFF2DB] rounded-full w-14 h-14 md:w-20 md:h-20 flex items-center justify-center flex-shrink-0">
+                <img src={item.icon} alt={item.alt} className="w-7 h-7 md:w-11 md:h-11" />
+              </div>
+              <span className="capitalize text-lg lg:text-2xl font-medium text-gray-700">
+                {item.name}
+              </span>
             </div>
-            <span className="capitalize text-lg lg:text-2xl text-gray-700">
-              {item.name}
-            </span>
-          </div>
-        ))}
+          ))}
+        </div>
 
-        {/* ✅ Interactive Instructions Section */}
-        <div className="mt-4">
-          <button
-            onClick={() => setShowInstructions(!showInstructions)}
-            className="bg-red-500 text-white font-bold py-2 px-6 rounded-md hover:bg-red-600 transition duration-300"
-          >
-            {showInstructions ? "Hide Instructions" : "Show Instructions"}
-          </button>
+        {/* ✅ Interactive Instructions Section with sticky button on mobile */}
+        <div className="mt-4 pb-20 md:pb-0">
+          <div className="sticky bottom-20 md:static z-20 w-full flex justify-center md:justify-start">
+            <button
+              onClick={() => setShowInstructions(!showInstructions)}
+              className="bg-red-500 text-white font-bold py-3 px-8 rounded-full md:rounded-md hover:bg-red-600 transition duration-300 shadow-xl md:shadow-none w-[90%] md:w-auto active:scale-95 transform"
+            >
+              {showInstructions ? "Hide Instructions" : "Show Instructions"}
+            </button>
+          </div>
 
           <AnimatePresence>
             {showInstructions && (
-              <motion.ol
-                className="list-decimal list-inside mt-4 space-y-2 text-gray-600"
+              <motion.div
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: "auto" }}
                 exit={{ opacity: 0, height: 0 }}
+                className="overflow-hidden"
               >
-                {instructions.map((step, index) => (
-                  <li key={index}>{step}</li>
-                ))}
-              </motion.ol>
+                <ol className="list-decimal list-inside mt-6 p-6 bg-white rounded-2xl shadow-sm border border-gray-100 space-y-3 text-gray-600 leading-relaxed">
+                  {instructions.map((step, index) => (
+                    <li key={index} className="pl-2">{step}</li>
+                  ))}
+                </ol>
+              </motion.div>
             )}
           </AnimatePresence>
         </div>
