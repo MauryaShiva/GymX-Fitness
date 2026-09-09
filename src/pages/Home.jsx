@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Fuse from "fuse.js";
+import { useSearchParams } from "react-router-dom";
 
 import allExercisesData from "../data/exercises.json"; // Local data import
 import HeroBanner from "../components/HeroBanner.jsx";
@@ -21,11 +22,22 @@ const Home = () => {
   const [exercises, setExercises] = useState(allExercisesData);
   const [bodyPart, setBodyPart] = useState("all");
 
+  const [searchParams, setSearchParams] = useSearchParams();
+
   // Fuse.js setup for smart search
   const fuse = new Fuse(allExercisesData, {
     keys: ["name", "targetMuscles", "equipments", "bodyParts"],
     threshold: 0.4,
   });
+
+  useEffect(() => {
+    if (searchParams.get("search") === "true") {
+      setSearchParams({});
+      setTimeout(() => {
+        window.dispatchEvent(new Event("open-search"));
+      }, 300);
+    }
+  }, [searchParams, setSearchParams]);
 
   // ✅ Filtering aur searching ka saara logic ab yahan hai
   const handleSearch = (searchTerm) => {

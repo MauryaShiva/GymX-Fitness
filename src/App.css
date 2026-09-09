@@ -1,1 +1,27 @@
 @import "tailwindcss";
+
+@theme {
+  --color-background: #121212;
+  --color-surface: #1e1e1e;
+  --color-primary: #ef4444;
+  --color-text-primary: #f3f4f6;
+  --color-text-secondary: #9ca3af;
+}
+
+@utility pb-safe {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+@utility pt-safe-top {
+  padding-top: env(safe-area-inset-top);
+}
+
+@utility mt-safe-top {
+  margin-top: env(safe-area-inset-top);
+}
+
+html, body {
+  background-color: var(--color-background);
+  color: var(--color-text-primary);
+  -webkit-tap-highlight-color: transparent;
+}

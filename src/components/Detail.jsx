@@ -38,69 +38,83 @@ const Detail = ({ exerciseDetail }) => {
   };
 
   return (
-    // ✅ Wrap the main container in a motion.div for entry animation
+    // ✅ Wrap the main container in a motion.div for entry animation. Updated for mobile-first.
     <motion.div
-      className="flex flex-col lg:flex-row p-5 items-center gap-10"
+      className="flex flex-col lg:flex-row items-center gap-0 lg:gap-16 w-full"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
     >
-      <motion.img
+      {/* Hero GIF Section: Full width on mobile for app feel */}
+      <motion.div
         variants={itemVariants}
-        src={gifUrl}
-        alt={name}
-        loading="lazy"
-        className="w-full max-w-md lg:max-w-lg shadow-lg rounded-lg"
-      />
+        className="w-full lg:w-1/2 bg-[var(--color-surface)] flex justify-center items-center overflow-hidden lg:rounded-3xl shadow-2xl relative"
+      >
+        <img
+          src={gifUrl}
+          alt={name}
+          loading="lazy"
+          className="w-full h-auto max-h-[500px] object-cover mix-blend-screen"
+        />
+        {/* Gradient overlay for blending */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-background)] via-transparent to-transparent lg:hidden"></div>
+      </motion.div>
 
       {/* ✅ Animate the text content as well */}
       <motion.div
         variants={itemVariants}
-        className="flex flex-col gap-5 lg:gap-6 w-full"
+        className="flex flex-col gap-6 lg:gap-8 w-full lg:w-1/2 px-4 py-8 lg:p-0 -mt-8 lg:mt-0 relative z-10"
       >
-        <h1 className="text-3xl lg:text-5xl font-bold capitalize text-gray-800">
+        <h1 className="text-4xl lg:text-6xl font-extrabold capitalize text-white tracking-tight">
           {name}
         </h1>
-        <p className="text-base lg:text-lg text-gray-600">
+        <p className="text-lg lg:text-xl text-gray-400 leading-relaxed">
           Exercises keep you strong.{" "}
-          <span className="capitalize font-semibold">{name}</span> is one of the
+          <span className="capitalize font-bold text-red-400">{name}</span> is one of the
           best exercises to target your{" "}
-          <span className="font-semibold">{targetMuscles[0]}</span>. It will
+          <span className="font-bold text-white">{targetMuscles[0]}</span>. It will
           help you improve your mood and gain energy.
         </p>
 
-        {extraDetail.map((item) => (
-          <div key={item.name} className="flex flex-row items-center gap-6">
-            <div className="bg-[#FFF2DB] rounded-full w-20 h-20 flex items-center justify-center flex-shrink-0">
-              <img src={item.icon} alt={item.alt} className="w-11 h-11" />
+        <div className="flex flex-col gap-4 mt-2">
+          {extraDetail.map((item) => (
+            <div key={item.name} className="flex flex-row items-center gap-5 p-4 rounded-2xl bg-[var(--color-surface)]/50 border border-gray-800 backdrop-blur-sm">
+              <div className="bg-red-500/10 rounded-full w-14 h-14 flex items-center justify-center flex-shrink-0">
+                <img src={item.icon} alt={item.alt} className="w-7 h-7 filter invert opacity-80" />
+              </div>
+              <span className="capitalize text-lg lg:text-xl text-gray-200 font-semibold">
+                {item.name}
+              </span>
             </div>
-            <span className="capitalize text-lg lg:text-2xl text-gray-700">
-              {item.name}
-            </span>
-          </div>
-        ))}
+          ))}
+        </div>
 
-        {/* ✅ Interactive Instructions Section */}
-        <div className="mt-4">
+        {/* ✅ Interactive Instructions Section with app-style buttons */}
+        <div className="mt-6">
           <button
             onClick={() => setShowInstructions(!showInstructions)}
-            className="bg-red-500 text-white font-bold py-2 px-6 rounded-md hover:bg-red-600 transition duration-300"
+            className="w-full bg-red-600 text-white font-bold py-4 px-6 rounded-xl hover:bg-red-700 active:scale-95 transition-all duration-300 shadow-lg shadow-red-500/20"
           >
-            {showInstructions ? "Hide Instructions" : "Show Instructions"}
+            {showInstructions ? "Hide Instructions" : "View Instructions"}
           </button>
 
           <AnimatePresence>
             {showInstructions && (
-              <motion.ol
-                className="list-decimal list-inside mt-4 space-y-2 text-gray-600"
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                exit={{ opacity: 0, height: 0 }}
+              <motion.div
+                initial={{ opacity: 0, height: 0, marginTop: 0 }}
+                animate={{ opacity: 1, height: "auto", marginTop: 24 }}
+                exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                className="overflow-hidden"
               >
-                {instructions.map((step, index) => (
-                  <li key={index}>{step}</li>
-                ))}
-              </motion.ol>
+                <div className="bg-[var(--color-surface)] p-6 rounded-2xl border border-gray-800">
+                  <h3 className="text-xl font-bold text-white mb-4">Steps</h3>
+                  <ol className="list-decimal list-inside space-y-4 text-gray-300">
+                    {instructions.map((step, index) => (
+                      <li key={index} className="leading-relaxed pl-2 pb-2 border-b border-gray-800 last:border-0">{step}</li>
+                    ))}
+                  </ol>
+                </div>
+              </motion.div>
             )}
           </AnimatePresence>
         </div>
