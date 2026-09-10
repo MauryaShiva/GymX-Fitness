@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { motion } from "framer-motion";
 // Assuming you have a data file for the weekly plan
 import { weeklyPlan } from "../data/weeklyPlan";
 // Using lucide-react for clean, modern icons. Make sure to install it: npm install lucide-react
@@ -34,14 +33,8 @@ const HomeWorkouts = () => {
   const videoIds = selectedWorkout?.videos || [];
 
   return (
-    // ✅ Apply motion wrapper for page transitions
-    <motion.div
-      initial={{ opacity: 0, x: 20 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: -20 }}
-      transition={{ duration: 0.3 }}
-      className="pt-12 md:pt-24 min-h-screen px-4 lg:px-12 pb-12 bg-gradient-to-b from-black via-gray-900 to-black text-white"
-    >
+    // ✅ Added a subtle background gradient for more visual depth
+    <div className="pt-24 min-h-screen px-6 lg:px-12 pb-12 bg-gradient-to-b from-gray-900 to-black text-white">
       <div className="max-w-7xl mx-auto">
         {/* ✅ Centered the header text for a more impactful title section */}
         <div className="text-center mb-12">
@@ -142,7 +135,7 @@ const HomeWorkouts = () => {
           to { opacity: 1; transform: translateY(0); }
         }
       `}</style>
-    </motion.div>
+    </div>
   );
 };
 
